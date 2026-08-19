@@ -262,13 +262,33 @@ void main() {
                     visibleSky
                 );
 
-            blockColor = vec4(refraction(fragposition, blockColor.rgb, waterNormalBase), 1.0);
+            float waterColumnDepth;
+            blockColor = vec4(
+                refraction(
+                    fragposition,
+                    blockColor.rgb,
+                    waterNormalBase,
+                    waterColumnDepth
+                ),
+                1.0
+            );
 
             fresnel = oxygenAtmosphereWaterReflectionFresnel(
                 fresnel,
                 waterSurfaceData,
                 dayMoment,
                 visibleSky
+            );
+
+            // A shallow river still reflects the sky, but never hides its bed
+            // completely. Deeper water restores the unrestricted reflection.
+            float shallowWater =
+                1.0 - smoothstep(0.75, 6.0, waterColumnDepth);
+            float shallowReflectionCap =
+                dayBlendFloat(0.60, 0.48, 0.70);
+            fresnel = min(
+                fresnel,
+                mix(1.0, shallowReflectionCap, shallowWater)
             );
 
             blockColor.rgb = water_shader(fragposition, surfaceNormal, blockColor.rgb, skyColorReflect, normalizedReflectWaterVector, fresnel, visibleSky, dither, directLightColor);

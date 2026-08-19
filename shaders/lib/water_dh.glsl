@@ -21,7 +21,12 @@ Water reflection and refraction related functions (dh).
     #endif
 #endif
 
-vec3 refraction(vec3 fragpos, vec3 color, vec3 refraction) {
+vec3 refraction(
+    vec3 fragpos,
+    vec3 color,
+    vec3 refraction,
+    out float waterColumnDepth
+) {
     vec2 pos = gl_FragCoord.xy * vec2(pixelSizeX, pixelSizeY);
 
     #if REFRACTION == 1
@@ -29,6 +34,7 @@ vec3 refraction(vec3 fragpos, vec3 color, vec3 refraction) {
     #endif
 
     float water_absortion;
+    waterColumnDepth = 0.0;
     if (isEyeInWater == 0) {
         float water_distance =
             2.0 * dhNearPlane * dhFarPlane / (dhFarPlane + dhNearPlane - (2.0 * gl_FragCoord.z - 1.0) * (dhFarPlane - dhNearPlane));
@@ -37,9 +43,17 @@ vec3 refraction(vec3 fragpos, vec3 color, vec3 refraction) {
         earth_distance =
             2.0 * dhNearPlane * dhFarPlane / (dhFarPlane + dhNearPlane - (2.0 * earth_distance - 1.0) * (dhFarPlane - dhNearPlane));
 
-        water_absortion = (earth_distance - water_distance) * 0.5;
-        water_absortion *= water_absortion;
-        water_absortion = (1.0 / -((water_absortion * WATER_ABSORPTION) + 1.125)) + 1.0;
+        waterColumnDepth = max(earth_distance - water_distance, 0.0);
+        float timeExtinction = dayBlendFloat(1.12, 0.88, 1.25);
+        float absorptionDensity =
+            (0.045 + WATER_ABSORPTION * 0.20) *
+            timeExtinction *
+            (1.0 + rainStrength * 0.12);
+        water_absortion = clamp(
+            1.0 - exp2(-waterColumnDepth * absorptionDensity),
+            0.0,
+            1.0
+        );
     } else {
         water_absortion = 0.0;
     }

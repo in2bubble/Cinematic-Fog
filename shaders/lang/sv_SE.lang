@@ -13,7 +13,7 @@ profile.comment=De "skugglösa" profilerna är designade för datorer med låg p
 
 #About
 #############################
-option.ACERCADE=Oxygen Atmosphere
+option.ACERCADE=Oxygen Atmosphere 1.1
 option.ACERCADE.comment=Tack för att du använder denna shader! :). Ändra Optifines inbyggda kvalitetsalternativ till normala värden eller dess standardvärden för bättre kvalitet.
 value.ACERCADE.0=v.9.5c
 
@@ -68,7 +68,6 @@ option.AA_TYPE=Tidsbestämd sampling
 value.AA_TYPE.0=AV
 value.AA_TYPE.1=Denoise
 value.AA_TYPE.2=TAA
-value.AA_TYPE.3=TAA+
 
 option.MOTION_BLUR=Rörelseoskärpa
 option.MOTION_BLUR_STRENGTH=Styrka för rörelseoskärpa

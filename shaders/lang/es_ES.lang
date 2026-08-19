@@ -13,7 +13,7 @@ profile.comment=Los perfiles "sin sombras" están pensados para máquinas de baj
 
 # Acerca de
 #############################
-option.ACERCADE=Oxygen Atmosphere
+option.ACERCADE=Oxygen Atmosphere 1.1
 option.ACERCADE.comment=¡Gracias por usar este shader! :). Configurá los controles de calidad nativos de Optifine en valores normales o predeterminados para mejor calidad.
 value.ACERCADE.0=v.9.5c
 
@@ -68,7 +68,6 @@ option.AA_TYPE=Muestreo temporal
 value.AA_TYPE.0=Desactivado
 value.AA_TYPE.1=Quitar ruido
 value.AA_TYPE.2=TAA
-value.AA_TYPE.3=TAA+
 
 option.MOTION_BLUR=Desenfoque de movimiento
 option.MOTION_BLUR_STRENGTH=Intensidad del desenfoque

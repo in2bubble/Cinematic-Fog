@@ -13,7 +13,7 @@ profile.comment="Gölgesiz" profiller, gölgeler göz ardı edilerek düşük pe
 
 #About
 #############################
-option.ACERCADE=Oxygen Atmosphere
+option.ACERCADE=Oxygen Atmosphere 1.1
 option.ACERCADE.comment=Bu shaderı kullandığınız için teşekkür ederiz! :). Daha iyi kalite için Optifine yerel kalite kontrollerini normal veya varsayılan değerlere ayarlayın.
 value.ACERCADE.0=v.9.5c
 
@@ -68,7 +68,6 @@ option.AA_TYPE=Geçici örnekleme
 value.AA_TYPE.0=Kapalı
 value.AA_TYPE.1=Gürültü giderme
 value.AA_TYPE.2=TAA
-value.AA_TYPE.3=TAA+
 
 option.MOTION_BLUR=Hareket bulanıklığı
 option.MOTION_BLUR_STRENGTH=Hareket bulanıklığı gücü

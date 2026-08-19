@@ -112,7 +112,12 @@ vec3 fastRaymarch(vec3 direction, vec3 hitPoint, inout float infinite, float dit
     #endif
 #endif
 
-vec3 refraction(vec3 fragpos, vec3 color, vec3 refraction) {
+vec3 refraction(
+    vec3 fragpos,
+    vec3 color,
+    vec3 refraction,
+    out float waterColumnDepth
+) {
     vec2 pos = gl_FragCoord.xy * vec2(pixelSizeX, pixelSizeY);
 
     #if REFRACTION == 1
@@ -120,6 +125,7 @@ vec3 refraction(vec3 fragpos, vec3 color, vec3 refraction) {
     #endif
 
     float water_absortion;
+    waterColumnDepth = 0.0;
     if (isEyeInWater == 0) {
         float water_distance = linearizeDepth(gl_FragCoord.z);
         float earth_depth = texture2D(depthtex1, pos.xy).r;
@@ -132,9 +138,21 @@ vec3 refraction(vec3 fragpos, vec3 color, vec3 refraction) {
             earth_distance = min(earth_distance, earth_distance_dh);
         #endif
 
-        water_absortion = earth_distance - water_distance;
-        water_absortion *= water_absortion;
-        water_absortion = (1.0 / -((water_absortion * WATER_ABSORPTION) + 1.125)) + 1.0;
+        waterColumnDepth = max(earth_distance - water_distance, 0.0);
+
+        // Fresh water starts genuinely clear in a shallow column and gains
+        // pigment continuously with depth. Night and rain increase extinction
+        // slightly without turning a one-block river into an opaque sheet.
+        float timeExtinction = dayBlendFloat(1.12, 0.88, 1.25);
+        float absorptionDensity =
+            (0.045 + WATER_ABSORPTION * 0.20) *
+            timeExtinction *
+            (1.0 + rainStrength * 0.12);
+        water_absortion = clamp(
+            1.0 - exp2(-waterColumnDepth * absorptionDensity),
+            0.0,
+            1.0
+        );
     } else {
         water_absortion = 0.0;
     }

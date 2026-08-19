@@ -198,13 +198,31 @@ void main() {
                     visibleSky
                 );
 
-            blockColor = vec4(refraction(fragposition, blockColor.rgb, waterNormalBase), 1.0);
+            float waterColumnDepth;
+            blockColor = vec4(
+                refraction(
+                    fragposition,
+                    blockColor.rgb,
+                    waterNormalBase,
+                    waterColumnDepth
+                ),
+                1.0
+            );
 
             fresnel = oxygenAtmosphereWaterReflectionFresnel(
                 fresnel,
                 waterSurfaceData,
                 dayMoment,
                 visibleSky
+            );
+
+            float shallowWater =
+                1.0 - smoothstep(0.75, 6.0, waterColumnDepth);
+            float shallowReflectionCap =
+                dayBlendFloat(0.60, 0.48, 0.70);
+            fresnel = min(
+                fresnel,
+                mix(1.0, shallowReflectionCap, shallowWater)
             );
 
         blockColor.rgb = water_shader_dh(fragposition, surfaceNormal, blockColor.rgb, skyColorReflect, normalizedReflectWaterVector, fresnel, visibleSky, dither, directLightColor);

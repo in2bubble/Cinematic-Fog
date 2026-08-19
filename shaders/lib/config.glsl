@@ -25,6 +25,10 @@ Clean-room analytical world atmosphere added 2026-08-02.
 #define ENTITY_METAL          10400.0  // Metal-like glossy blocks
 #define ENTITY_SAND           10410.0  // Sand-like glossy blocks
 #define ENTITY_FABRIC         10440.0  // Fabric-like glossy blocks
+#define ENTITY_GRASS_SURFACE  10510.0  // Grass-block faces that may grow procedural blades
+#define ENTITY_VANILLA_GRASS  10511.0  // Vanilla short-grass model replaced by procedural blades
+#define ENTITY_VANILLA_TALL_GRASS_LOWER 10512.0
+#define ENTITY_VANILLA_TALL_GRASS_UPPER 10513.0
 
 // Other constants
 #define ZENITH_SKY_RAIN_COLOR vec3(0.42, 0.50, 0.60)
@@ -80,7 +84,10 @@ Clean-room analytical world atmosphere added 2026-08-02.
 #define AO 1  // [0 1] Turn on for enhanced ambient occlusion (medium performance cost).
 #define AOSTEPS 5 // [2 3 4 5 6 7 8 9 10 11] How many samples are taken for AO (high performance cost).
 #define AO_STRENGTH 0.70 // [0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.66 0.70 0.75 0.80 0.85] Ambient occlusion strength (strength NOT affect performance).
-#define AA_TYPE 2 // [0 1 2 3]  No: Disable antialiasing (not recommended). Denoise only: Supersampling is only used to eliminate noise. TAA: Enable antialiasing. TAA+: Use FXAA to improve the result of TAA. It does not apply if chromatic aberration or DoF is being used.
+#define AA_TYPE 2 // [0 1 2]  No: Disable antialiasing (not recommended). Denoise only: Supersampling is only used to eliminate noise. TAA: Enable temporal antialiasing.
+#define GRASS_MODE 1 // [0 1 2] 0: vanilla panels, 1: replace vanilla grass only (default), 2: full meadow plus accented vanilla clusters.
+#define GRASS_QUALITY 4 // [0 1 2 3 4] Physical procedural-strand density: 12, 24, 48, 96, 192 blades per nearby block.
+#define GRASS_LOD_MODE 2 // [0 1 2 3 4] Distance reduction for grass density, geometry complexity and grouped wind animation.
 //#define MOTION_BLUR // Turn on motion blur
 #define MOTION_BLUR_STRENGTH 1.0 // [0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0] Set Motion blur strength. Lower framerate -> Lower strength and vice versa is recommended.
 #define MOTION_BLUR_SAMPLES 4 // [3 4 5 6 7 8] Motion blur samples 

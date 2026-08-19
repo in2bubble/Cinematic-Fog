@@ -89,6 +89,13 @@ varying vec3 candleColor;
 varying float directLightStrength;
 varying vec3 omniLight;
 
+#ifdef PROCEDURAL_TUFT_GRASS
+    varying float grassFogCoord;
+    varying vec2 grassTuftCoord;
+    flat varying float grassTuftSeed;
+    flat varying float grassTuftLayer;
+#endif
+
 #ifdef GBUFFER_WEATHER
     varying vec3 weatherWindView;
     varying float weatherCameraResponse;
@@ -140,6 +147,21 @@ varying vec3 omniLight;
 
 #include "/lib/luma.glsl"
 
+#ifdef PROCEDURAL_TUFT_GRASS
+    // Deterministic carpet variation without transcendental instructions. The
+    // physical strand colour is precomputed once in the geometry stage.
+    float tuftFragmentHash(float value) {
+        uint hashValue = floatBitsToUint(value) * 236887691u;
+        hashValue ^= hashValue >> 13;
+        hashValue *= 277803737u;
+        hashValue ^= hashValue >> 16;
+        hashValue *= 179424673u;
+        hashValue ^= hashValue >> 15;
+        return float(hashValue & 0x00ffffffu) *
+            0.000000059604644775390625;
+    }
+#endif
+
 #ifdef GBUFFER_WEATHER
     #include "/lib/rain_ssr.glsl"
 #endif
@@ -183,7 +205,86 @@ void main() {
         }
         blockColor *= tintColor;
     #else
-        vec4 blockColor = texture2D(tex, texcoord) * tintColor;
+        #if defined GBUFFER_TERRAIN && defined PROCEDURAL_TUFT_GRASS
+            // Generated strands already contain their one atlas sample, while
+            // the procedural ground carpet uses biome tint directly. Only
+            // ordinary terrain still needs a per-fragment texture lookup.
+            vec4 blockColor = grassTuftLayer > -1.5
+                ? tintColor
+                : texture2D(tex, texcoord) * tintColor;
+        #else
+            vec4 blockColor = texture2D(tex, texcoord) * tintColor;
+        #endif
+    #endif
+
+    #if defined GBUFFER_TERRAIN && defined PROCEDURAL_TUFT_GRASS
+        if (grassTuftLayer > 8.5) {
+            // Each fragment belongs to one finite-width physical ribbon. Nothing
+            // is cut out, so overlapping strands remain opaque and temporally
+            // stable against the sky and distant terrain.
+            float colorRandom = clamp(grassTuftSeed, 0.0, 1.0);
+            float bladeY = clamp(grassTuftCoord.y, 0.0, 1.0);
+            float lateralProfile =
+                1.0 - abs(clamp(grassTuftCoord.x, 0.0, 1.0) * 2.0 - 1.0);
+
+            vec3 biomeBase = blockColor.rgb;
+            vec3 bladeHue = mix(
+                vec3(0.84, 0.94, 0.82),
+                vec3(1.02, 1.00, 0.88),
+                colorRandom
+            );
+            float bladeTone = mix(0.90, 1.08, colorRandom);
+            float verticalTone = mix(
+                0.70,
+                1.06,
+                smoothstep(0.0, 1.0, bladeY)
+            );
+            float roundedProfile = mix(
+                sqrt(max(lateralProfile, 0.0)),
+                lateralProfile,
+                0.32
+            );
+            float cylindricalTone = mix(
+                0.78,
+                1.08,
+                roundedProfile
+            );
+            blockColor.rgb =
+                biomeBase * bladeHue * bladeTone * verticalTone *
+                cylindricalTone;
+            blockColor.a = 1.0;
+        } else if (grassTuftLayer > -1.5) {
+            // Absolute-world coordinates make this fine carpet continuous over
+            // both triangles and across block borders. It replaces the visible
+            // square atlas pattern rather than merely darkening it.
+            vec2 carpetCellA = floor(grassTuftCoord * 11.0);
+            vec2 carpetCellB = floor(
+                grassTuftCoord * 23.0 + vec2(7.0, -5.0)
+            );
+            float carpetNoiseA = tuftFragmentHash(
+                carpetCellA.x + carpetCellA.y * 71.0 + 19.0
+            );
+            float carpetNoiseB = tuftFragmentHash(
+                carpetCellB.x + carpetCellB.y * 113.0 + 37.0
+            );
+            float fineFibres = 0.5 + 0.5 * sin(
+                grassTuftCoord.x * 53.0 +
+                grassTuftCoord.y * 31.0 +
+                carpetNoiseA * 6.2831853
+            );
+            float carpetVariation =
+                0.76 + carpetNoiseA * 0.13 + carpetNoiseB * 0.07 +
+                fineFibres * 0.04;
+            vec3 carpetHue = mix(
+                vec3(0.74, 0.88, 0.68),
+                vec3(0.94, 0.98, 0.78),
+                carpetNoiseB
+            );
+            vec3 carpetColor =
+                tintColor.rgb * vec3(0.66, 0.74, 0.60) * carpetHue;
+            blockColor.rgb = carpetColor * carpetVariation;
+            blockColor.a = 1.0;
+        }
     #endif
 
     /*

@@ -58,8 +58,17 @@ uniform mat4 gbufferProjectionInverse;
     uniform vec3 shadowLightPosition;
 #endif
 
-#if WAVING == 1 || defined GBUFFER_WEATHER
+#if WAVING == 1 || defined GBUFFER_WEATHER || defined PLAYER_INTERACTIVE_FOLIAGE
     uniform vec3 cameraPosition;
+#endif
+
+#ifdef PLAYER_INTERACTIVE_FOLIAGE
+    // Iris: cameraPosition - player head position. Unlike cameraPosition alone,
+    // this keeps interaction centered on the player in third-person views.
+    uniform vec3 relativeEyePosition;
+#endif
+
+#if WAVING == 1 || defined GBUFFER_WEATHER
     uniform float frameTimeCounter;
 #endif
 
@@ -84,6 +93,15 @@ varying vec3 directLightColor;
 varying vec3 candleColor;
 varying float directLightStrength;
 varying vec3 omniLight;
+
+#ifdef PROCEDURAL_TUFT_GRASS
+    // Private bridge to the geometry stage. These values describe the source
+    // terrain vertex; they are not consumed by the fragment stage directly.
+    varying vec3 grassPlayerPosition;
+    varying vec3 grassSourceNormal;
+    varying float grassEntityId;
+    varying float grassFogCoord;
+#endif
 
 #ifdef GBUFFER_WEATHER
     varying vec3 weatherWindView;
@@ -126,7 +144,7 @@ varying vec3 omniLight;
 
 attribute vec4 mc_Entity;
 
-#if WAVING == 1
+#if WAVING == 1 || defined PLAYER_INTERACTIVE_FOLIAGE
     attribute vec2 mc_midTexCoord;
 #endif
 
@@ -157,6 +175,14 @@ void main() {
 
     #include "/src/basiccoords_vertex.glsl"
     #include "/src/position_vertex.glsl"
+
+    #ifdef PROCEDURAL_TUFT_GRASS
+        grassPlayerPosition = position.xyz;
+        grassSourceNormal = normalize(
+            mat3(gbufferModelViewInverse) * (gl_NormalMatrix * gl_Normal)
+        );
+        grassEntityId = mc_Entity.x;
+    #endif
     #ifdef GBUFFER_WEATHER
         #include "/src/weather_vertex.glsl"
     #endif
@@ -222,5 +248,16 @@ void main() {
     #if defined SHADOW_CASTING && SHADOW_LOCK > 0 && !defined NETHER
         vNormal = shadowWorldNormal;
         vBias = bias;
+    #endif
+
+    #ifdef SUPPRESS_REPLACED_VANILLA_GRASS
+      #if GRASS_MODE != 0
+        // The procedural grass-block surface replaces this crossed vanilla
+        // model. Collapse it before rasterization so it never enters the costly
+        // cutout geometry program merely to be discarded there.
+        if (abs(mc_Entity.x - ENTITY_VANILLA_GRASS) < 0.25) {
+            gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+        }
+      #endif
     #endif
 }

@@ -33,7 +33,11 @@ void main() {
     gl_Position.z = gl_Position.z * 0.2;
 
     is_noshadow = 0.0;
-    if (mc_Entity.x == ENTITY_NO_SHADOW_FIRE || mc_Entity.x == ENTITY_F_EMMISIVE) {
+    if (
+        mc_Entity.x == ENTITY_NO_SHADOW_FIRE ||
+        mc_Entity.x == ENTITY_F_EMMISIVE ||
+        mc_Entity.x == ENTITY_VANILLA_GRASS
+    ) {
         is_noshadow = 1.0;
     }
 

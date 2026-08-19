@@ -20,6 +20,19 @@ vec3 rainSSRViewPosition(vec2 screenPosition, float depth) {
     return viewPosition.xyz / viewPosition.w;
 }
 
+float rainSSRSceneDepth(vec2 screenPosition) {
+    // The weather pass only exposes the stable opaque depth copy. Composite
+    // additionally exposes complete depth, including a visible player model.
+    float opaqueDepth = texture2D(depthtex1, screenPosition).r;
+
+    #ifdef GBUFFER_WEATHER
+        return opaqueDepth;
+    #else
+        float completeDepth = texture2D(depthtex0, screenPosition).r;
+        return min(opaqueDepth, completeDepth);
+    #endif
+}
+
 vec4 traceRainSSR(
     vec3 rayOrigin,
     vec3 rayDirection,
@@ -66,17 +79,37 @@ vec4 traceRainSSR(
             break;
         }
 
-        float sceneDepth = texture2D(depthtex1, screenPosition.xy).r;
-        float depthDifference =
-            sceneDepth - screenPosition.z;
+        float sceneDepth = rainSSRSceneDepth(screenPosition.xy);
+        vec3 sceneViewPosition = rainSSRViewPosition(
+            screenPosition.xy,
+            sceneDepth
+        );
+        // Compare linear view-space distances. Comparing projected depth made
+        // thin grass ribbons and distant objects too easy to skip because the
+        // depth distribution is strongly non-linear near the far plane.
+        float rayViewDepth = -marchPosition.z;
+        float sceneViewDepth = -sceneViewPosition.z;
+        float depthDifference = rayViewDepth - sceneViewDepth;
+        float immediateThickness =
+            0.10 + length(marchPosition) * 0.012;
 
         if (
-            hasPreviousDifference &&
-            depthDifference < 0.0 &&
-            previousDifference >= 0.0 &&
-            sceneDepth < 0.9998
+            sceneDepth < 0.9998 &&
+            (
+                (
+                    hasPreviousDifference &&
+                    depthDifference >= 0.0 &&
+                    previousDifference < 0.0
+                ) ||
+                (
+                    !hasPreviousDifference &&
+                    depthDifference >= 0.0 &&
+                    depthDifference < immediateThickness
+                )
+            )
         ) {
-            frontPosition = previousMarchPosition;
+            frontPosition = hasPreviousDifference ?
+                previousMarchPosition : rayOrigin;
             backPosition = marchPosition;
             foundHit = true;
             break;
@@ -94,14 +127,17 @@ vec4 traceRainSSR(
                 (frontPosition + backPosition) * 0.5;
             vec3 middleScreenPosition =
                 rainSSRProject(middlePosition);
-            float middleSceneDepth = texture2D(
-                depthtex1,
+            float middleSceneDepth = rainSSRSceneDepth(
                 middleScreenPosition.xy
-            ).r;
+            );
+            vec3 middleSceneViewPosition = rainSSRViewPosition(
+                middleScreenPosition.xy,
+                middleSceneDepth
+            );
             float middleDifference =
-                middleSceneDepth - middleScreenPosition.z;
+                (-middlePosition.z) - (-middleSceneViewPosition.z);
 
-            if (middleDifference < 0.0) {
+            if (middleDifference >= 0.0) {
                 backPosition = middlePosition;
             } else {
                 frontPosition = middlePosition;
@@ -112,7 +148,7 @@ vec4 traceRainSSR(
             (frontPosition + backPosition) * 0.5;
         screenPosition = rainSSRProject(marchPosition);
         float finalSceneDepth =
-            texture2D(depthtex1, screenPosition.xy).r;
+            rainSSRSceneDepth(screenPosition.xy);
         vec3 finalSceneViewPosition =
             rainSSRViewPosition(
                 screenPosition.xy,

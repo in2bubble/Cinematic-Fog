@@ -193,13 +193,40 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
                     visibleSky
                 );
 
-            blockColor = vec4(refraction_voxy(fragposition, blockColor.rgb, waterNormalBase), 1.0);
+            float waterColumnDepth;
+            blockColor = vec4(
+                refraction_voxy(
+                    fragposition,
+                    blockColor.rgb,
+                    waterNormalBase,
+                    dayMixerV,
+                    nightMixerV,
+                    dayMomentV,
+                    waterColumnDepth
+                ),
+                1.0
+            );
 
             fresnel = oxygenAtmosphereWaterReflectionFresnel(
                 fresnel,
                 waterSurfaceData,
                 dayMomentV,
                 visibleSky
+            );
+
+            float shallowWater =
+                1.0 - smoothstep(0.75, 6.0, waterColumnDepth);
+            float shallowReflectionCap = dayBlendFloatVoxy(
+                0.60,
+                0.48,
+                0.70,
+                dayMixerV,
+                nightMixerV,
+                dayMomentV
+            );
+            fresnel = min(
+                fresnel,
+                mix(1.0, shallowReflectionCap, shallowWater)
             );
 
             blockColor.rgb = water_shader_voxy(fragposition, surfaceNormal, blockColor.rgb, skyColorReflect, normalizedReflectWaterVector, fresnel, visibleSky, directLightColor, lmcoord);

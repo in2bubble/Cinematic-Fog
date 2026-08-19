@@ -72,23 +72,12 @@ uniform float viewWidth;
     #include "/lib/oxygen_atmosphere_lunar_event.glsl"
 #endif
 
-#if AA_TYPE == 3 || defined OXYGEN_ATMOSPHERE_SPATIAL_AA
-    uniform float pixelSizeX;
-    uniform float pixelSizeY;
-#endif
-
 /* Ins / Outs */
 
 varying vec2 texcoord;
 varying float exposure;
 
 /* Utility functions */
-
-#if AA_TYPE == 3 || defined OXYGEN_ATMOSPHERE_SPATIAL_AA
-    // #include "/lib/post.glsl"
-    #include "/lib/luma.glsl"
-    #include "/lib/fxaa.glsl"
-#endif
 
 #include "/lib/basic_utils.glsl"
 #include "/lib/tone_maps.glsl"
@@ -108,9 +97,6 @@ void main() {
         vec3 blockColor = color_aberration();
     #else
         vec3 blockColor = texture2D(colortex1, texcoord).rgb;
-        #if (AA_TYPE == 3 || defined OXYGEN_ATMOSPHERE_SPATIAL_AA) && !defined DOF
-            blockColor = fxaa311(blockColor, 5);
-        #endif
     #endif
 
     // Exposure correction

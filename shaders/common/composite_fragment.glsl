@@ -435,7 +435,8 @@ void main() {
             float underwaterDistance =
                 max(linearDepth * far * 0.5, 0.0);
             float absorptionDensity =
-                0.022 + WATER_ABSORPTION * 0.12;
+                dayBlendFloat(0.050, 0.043, 0.064) +
+                WATER_ABSORPTION * 0.18;
             float waterAbsorption = clamp(
                 1.0 -
                     exp2(
@@ -448,7 +449,7 @@ void main() {
             float nearScattering = clamp(
                 1.0 -
                     exp2(
-                        -underwaterDistance * 0.055
+                        -underwaterDistance * 0.070
                     ),
                 0.0,
                 1.0
@@ -465,10 +466,10 @@ void main() {
                 1.0
             );
             float volumeIllumination =
-                dayBlendFloat(0.76, 0.84, 0.68) *
-                mix(1.0, 0.90, rainStrength);
+                dayBlendFloat(0.72, 0.86, 0.52) *
+                mix(1.0, 0.91, rainStrength);
             volumeIllumination +=
-                underwaterSkylight * 0.16;
+                underwaterSkylight * 0.14;
             vec3 illuminatedWater =
                 volumeWaterColor *
                 volumeIllumination;
@@ -476,8 +477,9 @@ void main() {
             // Red light disappears first; cyan and blue survive farther into
             // rivers and oceans, while nearby blocks remain readable.
             vec3 channelExtinction =
-                vec3(0.052, 0.030, 0.017) *
-                (0.82 + WATER_ABSORPTION * 1.8);
+                vec3(0.064, 0.038, 0.021) *
+                (0.86 + WATER_ABSORPTION * 1.45) *
+                dayBlendFloat(1.00, 0.88, 1.18);
             vec3 transmission = exp2(
                 -underwaterDistance *
                 channelExtinction
@@ -487,7 +489,7 @@ void main() {
             blockColor.rgb = mix(
                 transmittedScene,
                 illuminatedWater,
-                waterAbsorption * 0.88
+                waterAbsorption * 0.94
             );
             blockColor.rgb +=
                 volumeWaterColor *

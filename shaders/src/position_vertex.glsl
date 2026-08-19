@@ -4,6 +4,18 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
     
     isFoliage = 0.0;
 
+    // In vanilla-only mode the three exclusive grass IDs behave like the
+    // pack's original foliage panels. Procedural modes keep their source
+    // vertices anchored so the geometry stage can build stable roots.
+    bool isVanillaGrassPanel = false;
+    #if GRASS_MODE == 0
+        isVanillaGrassPanel = (
+            mc_Entity.x == ENTITY_VANILLA_GRASS ||
+            mc_Entity.x == ENTITY_VANILLA_TALL_GRASS_LOWER ||
+            mc_Entity.x == ENTITY_VANILLA_TALL_GRASS_UPPER
+        );
+    #endif
+
     // Comprobamos si la entidad actual es un tipo de follaje.
     bool isFoliageEntity = (
         mc_Entity.x == ENTITY_LOWERGRASS ||
@@ -11,7 +23,8 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
         mc_Entity.x == ENTITY_SMALLGRASS ||
         mc_Entity.x == ENTITY_SMALLENTS ||
         mc_Entity.x == ENTITY_LEAVES ||
-        mc_Entity.x == ENTITY_SMALLENTS_NW
+        mc_Entity.x == ENTITY_SMALLENTS_NW ||
+        isVanillaGrassPanel
     );
 
     vec4 viewPosition = gl_ModelViewMatrix * gl_Vertex;
@@ -20,6 +33,31 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
     if (isFoliageEntity) {
         isFoliage = 0.4;
 
+        #ifdef PLAYER_INTERACTIVE_FOLIAGE
+            bool receivesPlayerBend = (
+                mc_Entity.x == ENTITY_SMALLGRASS ||
+                mc_Entity.x == ENTITY_LOWERGRASS ||
+                mc_Entity.x == ENTITY_UPPERGRASS ||
+                mc_Entity.x == ENTITY_SMALLENTS ||
+                isVanillaGrassPanel
+            );
+
+            if (receivesPlayerBend) {
+                position.xyz = bendFoliageAwayFromPlayer(
+                    position.xyz,
+                    cameraPosition,
+                    relativeEyePosition,
+                    gl_MultiTexCoord0.xy,
+                    mc_midTexCoord.y
+                );
+
+                // Project the bent world-space point. This is the final bridge
+                // between the distance calculation and the rasterized position.
+                viewPosition = gbufferModelView * position;
+                gl_Position = gl_ProjectionMatrix * viewPosition;
+            }
+        #endif
+
         #if WAVING == 1
             if (mc_Entity.x != ENTITY_SMALLENTS_NW) {
                 vec3 worldpos = position.xyz + cameraPosition;
@@ -27,7 +65,10 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
                 // Lógica original para calcular el peso del movimiento
                 float weight = float(gl_MultiTexCoord0.t < mc_midTexCoord.t);
 
-                if (mc_Entity.x == ENTITY_UPPERGRASS) {
+                if (
+                    mc_Entity.x == ENTITY_UPPERGRASS ||
+                    mc_Entity.x == ENTITY_VANILLA_TALL_GRASS_UPPER
+                ) {
                     weight += 1.0;
                 } else if (mc_Entity.x == ENTITY_LEAVES) {
                     weight = .3;

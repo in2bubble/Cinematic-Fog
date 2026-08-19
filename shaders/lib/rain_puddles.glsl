@@ -823,15 +823,15 @@ vec3 applyRainPuddles(
         vec3(0.2126, 0.7152, 0.0722)
     );
     float reflectedLumaLimit =
-        sceneLuma * mix(1.55, 1.16, nightPhase) +
-        mix(0.050, 0.012, nightPhase);
+        sceneLuma * mix(2.35, 1.48, nightPhase) +
+        mix(0.14, 0.028, nightPhase);
     planarSceneReflection *= min(
         1.0,
         reflectedLumaLimit /
         max(planarReflectionLuma, 0.001)
     );
     float planarReflectionWeight =
-        (0.30 + fresnel * 0.16) *
+        (0.48 + fresnel * 0.22) *
         smoothstep(0.04, 0.24, screenPosition.y) *
         (1.0 - smoothstep(0.94, 0.998, screenPosition.y));
     vec3 broadReflection = mix(
@@ -842,10 +842,21 @@ vec3 applyRainPuddles(
 
     // The broad reflection remains translucent so the animated shallow-water
     // texture, rings and traveling waves are still visible underneath.
+    float reflectionTimeStrength = mix(
+        1.08 + daylightPhase * 0.10,
+        0.78,
+        nightPhase
+    );
+    vec3 reflectionTimeTint = mix(
+        vec3(1.0),
+        vec3(0.76, 0.86, 1.0),
+        nightPhase
+    );
+    broadReflection *= reflectionTimeTint * reflectionTimeStrength;
+
     float skySheen =
-        (0.045 + fresnel * 0.18 + animatedShimmer * 0.015) *
-        PUDDLE_REFLECTION *
-        puddleMask;
+        (0.10 + fresnel * 0.24 + animatedShimmer * 0.025) *
+        PUDDLE_REFLECTION;
     puddleBody = mix(
         puddleBody,
         broadReflection,
@@ -858,7 +869,9 @@ vec3 applyRainPuddles(
     vec4 screenReflection = vec4(0.0);
     float rippleGlint =
         clamp(length(impactRipple) * 5.0, 0.0, 1.0);
-    #if PUDDLE_SSR_GLINTS == 1 && REFLECTION == 1 && SSR_TYPE > 0
+    // Puddle reflections have their own switch and must not silently disappear
+    // when the separate global water-reflection preset is changed.
+    #if PUDDLE_SSR_GLINTS == 1
         if (puddleMask > 0.055) {
             float jitter = puddleHash21(
                 gl_FragCoord.xy + float(frameCounter)
@@ -870,6 +883,11 @@ vec3 applyRainPuddles(
             );
         }
     #endif
+
+    vec3 screenReflectionColor =
+        screenReflection.rgb *
+        reflectionTimeTint *
+        reflectionTimeStrength;
 
     float bodyLuma = dot(
         puddleBody,
@@ -887,35 +905,32 @@ vec3 applyRainPuddles(
     float ssrGlintAmount =
         screenReflection.a *
         brightSceneHighlight *
-        (0.045 + fresnel * 0.13 + rippleGlint * 0.17) *
-        PUDDLE_REFLECTION *
-        puddleMask;
+        (0.075 + fresnel * 0.17 + rippleGlint * 0.20) *
+        PUDDLE_REFLECTION;
     puddleBody +=
-        screenReflection.rgb * ssrGlintAmount;
+        screenReflectionColor * ssrGlintAmount;
 
     // A valid hit contributes the building/terrain image directly. It remains
     // translucent so the animated shallow-water body is still visible.
     float ssrBodyAmount =
         screenReflection.a *
         (
-            0.30 +
-            fresnel * 0.40 +
-            windWaveCrest * 0.090 +
-            rippleGlint * 0.070
+            0.48 +
+            fresnel * 0.34 +
+            windWaveCrest * 0.075 +
+            rippleGlint * 0.055
         ) *
-        PUDDLE_REFLECTION *
-        puddleMask;
+        PUDDLE_REFLECTION;
     puddleBody = mix(
         puddleBody,
-        screenReflection.rgb,
+        screenReflectionColor,
         ssrBodyAmount
     );
 
     float fallbackReflectionAmount =
         (1.0 - screenReflection.a) *
-        (0.050 + fresnel * 0.14) *
-        PUDDLE_REFLECTION *
-        puddleMask;
+        (0.12 + fresnel * 0.20) *
+        PUDDLE_REFLECTION;
     puddleBody = mix(
         puddleBody,
         broadReflection,

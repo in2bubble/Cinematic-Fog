@@ -1,4 +1,5 @@
-# Oxygen Atmosphere
+# Oxygen Atmosphere 1.1
+
 
 ## Overview
 
@@ -24,6 +25,8 @@ Oxygen Atmosphere is an independent modified shaderpack based on
 - [KDXavier on Modrinth](https://modrinth.com/user/KDXavier)
 
 Oxygen Atmosphere is not an official MakeUp Ultra Fast release.
+
+Texture provenance is documented separately in `ASSET_SOURCES.md`.
 
 ## License
 
