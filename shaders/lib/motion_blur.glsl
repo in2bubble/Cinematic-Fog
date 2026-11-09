@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - motion_blur.glsl
+/* Cinematic Fog - motion_blur.glsl
 Motion blur functions.
 
 Javier Garduño - GNU Lesser General Public License v3.0

@@ -1,5 +1,5 @@
 /*
- * Oxygen Atmosphere dynamic precipitation
+ * Cinematic Fog dynamic precipitation
  *
  * Minecraft supplies camera-facing weather columns.  Shearing those columns
  * in world space keeps the rain physically coherent: turning the player's

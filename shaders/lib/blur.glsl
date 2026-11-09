@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - blur.glsl
+/* Cinematic Fog - blur.glsl
 Blur functions.
 
 Javier Garduño - GNU Lesser General Public License v3.0

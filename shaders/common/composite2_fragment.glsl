@@ -28,6 +28,8 @@ uniform sampler2D colortex1;
     uniform float frameTime;
 #endif
 
+#include "/lib/dh_scene.glsl"
+
 /* Ins / Outs */
 
 varying vec2 texcoord;
@@ -58,6 +60,14 @@ void main() {
     #if AA_TYPE > 0 || defined MOTION_BLUR
         // Retrojection of previous frame
         float z_depth = texture2DLod(depthtex1, texcoord, 0).r;
+        // Distant Horizons LODs read vanilla depth 1.0; reproject them from
+        // their real depth or they smear and ghost under TAA.
+        bool lodPixel = false;
+        float lodDepth = 1.0;
+        #ifdef DISTANT_HORIZONS
+            lodDepth = dhSceneDepth(texcoord);
+            lodPixel = dhIsLodPixel(z_depth, lodDepth);
+        #endif
         vec2 texcoordPast;
         vec3 curr_view_pos;
         vec3 curr_feet_player_pos;
@@ -65,12 +75,21 @@ void main() {
         vec3 prev_view_pos;
         vec2 final_pos;
 
+        mat4 reprojInverse = gbufferProjectionInverse;
+        float reprojDepth = z_depth;
+        #ifdef DISTANT_HORIZONS
+            if (lodPixel) {
+                reprojInverse = dhProjectionInverse;
+                reprojDepth = lodDepth;
+            }
+        #endif
+
         if(z_depth < 0.56) {
             texcoordPast = texcoord;
         } else {
             curr_view_pos =
-                vec3(vec2(gbufferProjectionInverse[0].x, gbufferProjectionInverse[1].y) * (texcoord * 2.0 - 1.0) + gbufferProjectionInverse[3].xy, gbufferProjectionInverse[3].z);
-            curr_view_pos /= (gbufferProjectionInverse[2].w * (z_depth * 2.0 - 1.0) + gbufferProjectionInverse[3].w);
+                vec3(vec2(reprojInverse[0].x, reprojInverse[1].y) * (texcoord * 2.0 - 1.0) + reprojInverse[3].xy, reprojInverse[3].z);
+            curr_view_pos /= (reprojInverse[2].w * (reprojDepth * 2.0 - 1.0) + reprojInverse[3].w);
             curr_feet_player_pos = mat3(gbufferModelViewInverse) * curr_view_pos + gbufferModelViewInverse[3].xyz;
 
             prev_feet_player_pos =
@@ -85,9 +104,9 @@ void main() {
 
     #ifdef MOTION_BLUR
         #if AA_TYPE > 0
-           float dither = shiftedOxygenAtmosphereDither(gl_FragCoord.xy);
+           float dither = shiftedCinematicFogDither(gl_FragCoord.xy);
         #else
-           float dither = oxygenAtmosphereDither(gl_FragCoord.xy);
+           float dither = cinematicFogDither(gl_FragCoord.xy);
         #endif
         // "Speed"
         vec2 velocity = texcoord - texcoordPast;

@@ -65,7 +65,13 @@ uniform mat4 gbufferProjectionInverse;
 #ifdef PLAYER_INTERACTIVE_FOLIAGE
     // Iris: cameraPosition - player head position. Unlike cameraPosition alone,
     // this keeps interaction centered on the player in third-person views.
-    uniform vec3 relativeEyePosition;
+    #ifdef IS_IRIS
+        uniform vec3 relativeEyePosition;
+    #else
+        // OptiFine lacks this uniform: the player is treated as the camera,
+        // which is exact in first person.
+        const vec3 relativeEyePosition = vec3(0.0);
+    #endif
 #endif
 
 #if WAVING == 1 || defined GBUFFER_WEATHER

@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - color_utils.glsl
+/* Cinematic Fog - color_utils_end.glsl
 Usefull data for color manipulation.
 
 Javier Garduño - GNU Lesser General Public License v3.0
@@ -9,8 +9,8 @@ uniform float dayMixer;
 uniform float nightMixer;
 
 // Lunar eclipses are an Overworld-only event. End cloud shading shares the
-// Oxygen Atmosphere cloud code, so provide its neutral eclipse value here.
-#define OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING 0.0
+// Cinematic Fog cloud code, so provide its neutral eclipse value here.
+#define CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING 0.0
 
 #define OMNI_TINT 0.62
 #define LIGHT_SUNSET_COLOR vec3(0.235, 0.245, 0.330)

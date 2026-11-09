@@ -1,6 +1,6 @@
 #version 120
 #extension GL_ARB_shader_texture_lod : enable
-/* Oxygen Atmosphere - composite.fsh
+/* Cinematic Fog - composite.fsh
 Render: Bloom and volumetric light
 
 Javier Garduño - GNU Lesser General Public License v3.0

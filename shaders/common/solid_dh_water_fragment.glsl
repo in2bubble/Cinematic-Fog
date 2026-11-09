@@ -101,7 +101,6 @@ void main() {
         float dither = shiftedRDither(gl_FragCoord.xy);
     #else
         float dither = rDither(gl_FragCoord.xy);
-        // dither = 1.0;
     #endif
     
     // Avoid render unnecessary DH
@@ -121,13 +120,13 @@ void main() {
     #else
         vec3 mapPos = position.xyz + cameraPosition;
         vec4 waterSurfaceData =
-            oxygenAtmosphereWaterSurfaceData(
+            cinematicFogWaterSurfaceData(
                 mapPos.xzy,
                 dayMoment,
                 0.0
             );
         vec3 waterNormalBase =
-            oxygenAtmosphereWaterNormal(waterSurfaceData);
+            cinematicFogWaterNormal(waterSurfaceData);
     #endif
 
     vec3 surfaceNormal;
@@ -187,9 +186,9 @@ void main() {
                 (directLightStrength * visibleSky * directLightColor) * (1.0 - rainStrength * 0.75) +
                 candleColor;
 
-            vec3 temporalWaterColor = oxygenAtmosphereWaterTimeColor();
+            vec3 temporalWaterColor = cinematicFogWaterTimeColor();
             blockColor.rgb =
-                oxygenAtmosphereWaterEnvironmentLighting(
+                cinematicFogWaterEnvironmentLighting(
                     realLight,
                     skyColorReflect,
                     temporalWaterColor,
@@ -209,7 +208,7 @@ void main() {
                 1.0
             );
 
-            fresnel = oxygenAtmosphereWaterReflectionFresnel(
+            fresnel = cinematicFogWaterReflectionFresnel(
                 fresnel,
                 waterSurfaceData,
                 dayMoment,
@@ -229,7 +228,7 @@ void main() {
 
     #endif
 
-    } else {  // Otros translúcidos
+    } else {  // Other translucent blocks
 
         blockColor = tintColor;
 

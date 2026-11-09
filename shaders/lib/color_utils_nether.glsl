@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - color_utils.glsl
+/* Cinematic Fog - color_utils_nether.glsl
 Usefull data for color manipulation.
 
 Javier Garduño - GNU Lesser General Public License v3.0
@@ -10,7 +10,7 @@ uniform float nightMixer;
 
 // Lunar eclipses only exist in the Overworld. The shared volumetric-cloud
 // shader still compiles in the Nether, so give it the neutral event value.
-#define OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING 0.0
+#define CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING 0.0
 
 #define OMNI_TINT 0.5
 #define LIGHT_SUNSET_COLOR vec3(0.06885294, 0.06297058, 0.04879411)

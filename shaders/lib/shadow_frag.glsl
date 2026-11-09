@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - shadow_frag.glsl
+/* Cinematic Fog - shadow_frag.glsl
 Fragment shadow function.
 
 Javier Garduño - GNU Lesser General Public License v3.0
@@ -26,7 +26,6 @@ float get_shadow(vec3 the_shadow_pos, float dither) {
         shadow_sample += shadow2D(shadowtex1, vec3(the_shadow_pos.xy + offset2, the_shadow_pos.z - z_bias)).r;
         shadow_sample += shadow2D(shadowtex1, vec3(the_shadow_pos.xy - offset2, the_shadow_pos.z - z_bias)).r;
 
-        // shadow_sample *= 0.5;
         shadow_sample *= 0.25;
     #endif
 
@@ -84,7 +83,6 @@ float get_shadow(vec3 the_shadow_pos, float dither) {
 
             vec2 offset = (vec2(cos(dither), sin(dither)) * current_radius * SHADOW_BLUR) / shadowMapResolution;
             vec2 offset2 = (vec2(cos(dither_2), sin(dither_2)) * (1.0 - current_radius) * SHADOW_BLUR) / shadowMapResolution;
-            // vec2 offset2 = vec2(-offset.y, offset.x);
 
             float z_bias = dither * 0.00002;
 

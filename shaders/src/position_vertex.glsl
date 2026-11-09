@@ -1,6 +1,6 @@
 gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
-#ifdef FOLIAGE_V  // Lógica optimizada para follaje y bloques generales
+#ifdef FOLIAGE_V  // Optimized path for foliage and general blocks
     
     isFoliage = 0.0;
 
@@ -16,7 +16,7 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
         );
     #endif
 
-    // Comprobamos si la entidad actual es un tipo de follaje.
+    // Check whether the current entity is a foliage type.
     bool isFoliageEntity = (
         mc_Entity.x == ENTITY_LOWERGRASS ||
         mc_Entity.x == ENTITY_UPPERGRASS ||
@@ -62,7 +62,7 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
             if (mc_Entity.x != ENTITY_SMALLENTS_NW) {
                 vec3 worldpos = position.xyz + cameraPosition;
 
-                // Lógica original para calcular el peso del movimiento
+                // Original logic for the movement weight
                 float weight = float(gl_MultiTexCoord0.t < mc_midTexCoord.t);
 
                 if (
@@ -78,7 +78,7 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
                 weight *= lmcoord.y * lmcoord.y;
                 
-                // Calculamos el DESPLAZAMIENTO y lo añadimos a la posición base ya calculada.
+                // Compute the offset and add it to the base position computed above.
                 vec3 waveOffsetWorld = wave_move(worldpos.xzy) * weight * (0.03 + (rainStrength * .05));
                 vec4 waveOffsetClip = gl_ModelViewProjectionMatrix * vec4(waveOffsetWorld, 0.0);
                 
@@ -87,7 +87,7 @@ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
         #endif
     }
 
-#else // Lógica para cuando no es un shader con follaje (p. ej. entidades)
+#else // Path for programs without foliage (e.g. entities)
 
     vec4 viewPosition = gl_ModelViewMatrix * gl_Vertex;
     #ifndef NO_SHADOWS

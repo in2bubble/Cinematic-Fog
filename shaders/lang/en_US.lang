@@ -1,21 +1,12 @@
 #Profiles
 ############################
-profile.no_effects=No effects
-profile.shadowless_low=Shadowless Low
-profile.shadowless_medium=Shadowless Medium
-profile.shadowless_high=Shadowless High
-profile.low=Low
-profile.medium=Medium
 profile.high=High
-profile.extremeplus=High (DoF)
+profile.performance=Performance
 
-profile.comment=The "shadowless" profiles are designed for low-performance machines, disregarding the shadows. Traditional profiles slowly add higher quality shadows and more advanced heavy effects. Please experiment with the available options and find the best combination for you.
+profile.comment=Performance is the default: cheaper settings (75-block shadows, no colored shadows, fewer AO/cloud steps, no cloud reflection in water, vanilla grass, 2K sun/moon). High is the full-quality profile for screenshots (4K sun/moon, 255-block shadows, custom grass).
 
 #About
 #############################
-option.ACERCADE=Oxygen Atmosphere 1.1
-option.ACERCADE.comment=Thanks for using this shader! :). Set Optifine native quality controls on normal or default values for better quality.
-value.ACERCADE.0=v.9.5c
 
 #Options
 #############################
@@ -54,7 +45,6 @@ option.DOF=Depth of field
 
 option.DOF_STRENGTH=DoF strength
 
-option.DOF_SAMPLES_FACTOR=DoF samples factor
 
 option.AO=Ambient occlusion
 value.AO.0=Off
@@ -71,10 +61,10 @@ value.AA_TYPE.2=TAA
 
 option.GRASS_QUALITY=Grass detail
 option.GRASS_QUALITY.comment=Choose how dense nearby grass looks.
-option.GRASS_MODE=Grass style
-option.GRASS_MODE.comment=Choose original grass, enhanced vanilla plants, or grass across the ground.
-value.GRASS_MODE.0=Original
-value.GRASS_MODE.1=Enhanced (Default)
+option.GRASS_MODE=Custom grass
+option.GRASS_MODE.comment=Turn custom grass off (original vanilla grass), or choose enhanced vanilla plants or grass across the ground.
+value.GRASS_MODE.0=Off
+value.GRASS_MODE.1=Enhanced
 value.GRASS_MODE.2=Full ground cover
 value.GRASS_QUALITY.0=Low
 value.GRASS_QUALITY.1=Medium
@@ -95,25 +85,13 @@ option.MOTION_BLUR_SAMPLES=Motion blur samples
 
 option.VANILLA_WATER=Vanilla like water
 
-option.WATER_TEXTURE=Water texture
-value.WATER_TEXTURE.0=No
-value.WATER_TEXTURE.1=Yes
 
-option.WATER_COLOR_SOURCE=Water color
-value.WATER_COLOR_SOURCE.0=Shader scheme
-value.WATER_COLOR_SOURCE.1=Resource Pack
 
-option.REFLECTION=Reflection
-value.REFLECTION.0=Off
-value.REFLECTION.1=On
 
 option.REFRACTION=Refraction
 value.REFRACTION.0=Off
 value.REFRACTION.1=On
 
-option.SSR_TYPE=Reflection type
-value.SSR_TYPE.0=Flipped image
-value.SSR_TYPE.1=Raymarching
 
 option.SUN_REFLECTION=Sun reflection
 value.SUN_REFLECTION.0=Off
@@ -148,7 +126,7 @@ value.COLOR_SCHEME.4=Captain
 value.COLOR_SCHEME.5=Psychedelic
 value.COLOR_SCHEME.6=Cocoa
 value.COLOR_SCHEME.7=Testigo
-value.COLOR_SCHEME.8=Oxygen Atmosphere
+value.COLOR_SCHEME.8=Cinematic Fog
 value.COLOR_SCHEME.99=Custom
 
 option.LIGHT_SUNSET_COLOR_R=Sunset light R
@@ -191,9 +169,6 @@ option.WATER_COLOR_R=Water R
 option.WATER_COLOR_G=Water G
 option.WATER_COLOR_B=Water B
 
-option.NV_COLOR_R=Night vision R multiplier
-option.NV_COLOR_G=Night vision G multiplier
-option.NV_COLOR_B=Night vision B multiplier
 
 option.OMNI_TINT_CUSTOM=Omni tint
 
@@ -265,21 +240,14 @@ value.BLOCKLIGHT_TEMP.4=White light
 
 option.sunPathRotation=Sun angle
 
-option.USE_BASIC_SH=Custom dimensions basic shader
 
 option.MATERIAL_GLOSS=Material gloss
 
 option.DYN_HAND_LIGHT=Fake dynamic light
 
 #Screens
-screen.ADVANCED_SCREEN=Advanced options
-screen.ADVANCED_SCREEN.comment=Set advanced options
 
-screen.COMPATIBILITY_SCREEN=Compatibility
-screen.COMPATIBILITY_SCREEN.comment=Set compatibility options
 
-screen.SHADOWS_SCREEN=Shadows
-screen.SHADOWS_SCREEN.comment=Set shadows options
 
 option.SHADOW_LOCK=Pixel locked shadows
 value.SHADOW_LOCK.0=Disabled
@@ -289,42 +257,15 @@ value.SHADOW_LOCK.64=64x64
 value.SHADOW_LOCK.128=128x128
 value.SHADOW_LOCK.256=256x256
 
-screen.DOF_SCREEN=Depth of field
-screen.DOF_SCREEN.comment=Set depth of field options
 
-screen.AO_SCREEN=Ambient occlusion
-screen.AO_SCREEN.comment=Set ambient occlusion options
 
-screen.WATER_SCREEN=Water
-screen.WATER_SCREEN.comment=Set water options.
 
-screen.POST_SCREEN= Post effects
-screen.POST_SCREEN.comment=Set post effects options.
 
-screen.LIGHT_SCREEN=Light
-screen.LIGHT_SCREEN.comment=Set light options.
 
-screen.CLOUDS_SCREEN=Sun & clouds
-screen.CLOUDS_SCREEN.comment=Set sun and clouds options.
 
-screen.FOG_SCREEN=Fog
-screen.FOG_SCREEN.comment=Set fog options
 
-screen.MOTION_BLUR_SCREEN=Motion blur
-screen.MOTION_BLUR_SCREEN.comment=Set motion blur options
 
-screen.ACCESIBILITY_SCREEN=Accesibility
-screen.ACCESIBILITY_SCREEN.comment=Set accesibility options
 
-screen.CUSTOM_COLORS_SCREEN=Custom colors
-screen.CUSTOM_COLORS_SCREEN.comment=Set custom colors
-screen.CUSTOM_COLORS_DAY=Day custom colors
-screen.CUSTOM_COLORS_SUNSET=Sunset/dawn custom colors
-screen.CUSTOM_COLORS_NIGHT=Night custom colors
-screen.CUSTOM_COLORS_WATER=Water custom color
-screen.CUSTOM_COLORS_NV=Night vision custom color
-screen.WEATHER_SCREEN=Dynamic weather
-screen.WEATHER_SCREEN.comment=Configure wind-driven rain and its watery highlights
 
 option.DYNAMIC_RAIN=Windy rain
 option.DYNAMIC_RAIN.comment=Makes rain move with the wind.
@@ -358,3 +299,6 @@ option.PUDDLE_SSR_GLINTS=Reflect surroundings
 option.PUDDLE_SSR_GLINTS.comment=Reflect nearby grass, terrain and objects.
 option.PUDDLE_SSR_STEPS=Reflection quality
 option.PUDDLE_SSR_STEPS.comment=Higher quality gives clearer reflections but uses more performance.
+option.SKY_TEXTURE_RES=Sun/Moon Texture Size
+value.SKY_TEXTURE_RES.0=2K
+value.SKY_TEXTURE_RES.1=4K (original)

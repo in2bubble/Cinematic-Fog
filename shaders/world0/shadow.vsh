@@ -1,6 +1,6 @@
 #version 120
 #extension GL_ARB_shader_texture_lod : enable
-/* Oxygen Atmosphere - shadow.fsh
+/* Cinematic Fog - shadow.fsh
 Render: Shadowmap
 
 Javier Garduño - GNU Lesser General Public License v3.0

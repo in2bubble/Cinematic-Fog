@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - time-of-day authored water surface.
+/* Cinematic Fog - time-of-day authored water surface.
  *
  * Four distinct generated height/flow paintings share one guarded atlas:
  * dawn, noon, dusk and midnight. Each phase has its own scale, direction and
@@ -8,12 +8,12 @@
  */
 
 #ifdef VOXY_WATER
-    #define OXYGEN_ATMOSPHERE_WATER_SAMPLE(texSampler, uv) texture(texSampler, uv)
+    #define CINEMATIC_FOG_WATER_SAMPLE(texSampler, uv) texture(texSampler, uv)
 #else
-    #define OXYGEN_ATMOSPHERE_WATER_SAMPLE(texSampler, uv) texture2D(texSampler, uv)
+    #define CINEMATIC_FOG_WATER_SAMPLE(texSampler, uv) texture2D(texSampler, uv)
 #endif
 
-vec2 oxygenAtmosphereWaterAtlasUv(vec2 uv, float styleIndex) {
+vec2 cinematicFogWaterAtlasUv(vec2 uv, float styleIndex) {
     vec2 cellOrigin;
     if (styleIndex < 0.5) {
         cellOrigin = vec2(0.0, 0.0);
@@ -34,7 +34,7 @@ vec2 oxygenAtmosphereWaterAtlasUv(vec2 uv, float styleIndex) {
         fract(uv) * atlasInnerSpan;
 }
 
-vec4 oxygenAtmosphereWaterMotionProfile(float styleIndex) {
+vec4 cinematicFogWaterMotionProfile(float styleIndex) {
     if (styleIndex < 0.5) {
         // frequency, speed, wave energy, domain-warp size
         return vec4(0.72, 0.58, 0.72, 1.28);
@@ -47,7 +47,7 @@ vec4 oxygenAtmosphereWaterMotionProfile(float styleIndex) {
     }
 }
 
-float oxygenAtmosphereWaterMotionAngle(float styleIndex) {
+float cinematicFogWaterMotionAngle(float styleIndex) {
     if (styleIndex < 0.5) {
         return -0.18;
     } else if (styleIndex < 1.5) {
@@ -59,15 +59,15 @@ float oxygenAtmosphereWaterMotionAngle(float styleIndex) {
     }
 }
 
-float oxygenAtmosphereWaterNightAmount(float waterDayMoment) {
+float cinematicFogWaterNightAmount(float waterDayMoment) {
     float moment = mod(waterDayMoment, 1.0);
     return
         smoothstep(0.50, 0.68, moment) *
         (1.0 - smoothstep(0.92, 1.0, moment));
 }
 
-#if !defined VOXY_WATER && !defined OXYGEN_ATMOSPHERE_WATER_DISTANT_SURFACE
-vec4 oxygenAtmosphereWaterRainImpactField(
+#if !defined VOXY_WATER && !defined CINEMATIC_FOG_WATER_DISTANT_SURFACE
+vec4 cinematicFogWaterRainImpactField(
     vec2 worldPosition,
     float time
 ) {
@@ -202,7 +202,7 @@ vec4 oxygenAtmosphereWaterRainImpactField(
 }
 #endif
 
-vec3 oxygenAtmosphereWaterStyleSample(
+vec3 cinematicFogWaterStyleSample(
     vec2 p,
     float time,
     float styleIndex
@@ -279,13 +279,13 @@ vec3 oxygenAtmosphereWaterStyleSample(
         heightAWeight = 0.72;
     }
 
-    vec3 authoredA = OXYGEN_ATMOSPHERE_WATER_SAMPLE(
+    vec3 authoredA = CINEMATIC_FOG_WATER_SAMPLE(
         noisetex,
-        oxygenAtmosphereWaterAtlasUv(uvA, styleIndex)
+        cinematicFogWaterAtlasUv(uvA, styleIndex)
     ).rgb;
-    vec3 authoredB = OXYGEN_ATMOSPHERE_WATER_SAMPLE(
+    vec3 authoredB = CINEMATIC_FOG_WATER_SAMPLE(
         noisetex,
-        oxygenAtmosphereWaterAtlasUv(uvB, styleIndex)
+        cinematicFogWaterAtlasUv(uvB, styleIndex)
     ).rgb;
     vec2 slope =
         (authoredA.rg * 2.0 - 1.0) * slopeAWeight +
@@ -296,7 +296,7 @@ vec3 oxygenAtmosphereWaterStyleSample(
     return vec3(slope, height);
 }
 
-vec4 oxygenAtmosphereWaterSurfaceData(
+vec4 cinematicFogWaterSurfaceData(
     vec3 worldPos,
     float waterDayMoment,
     float rainImpactMask
@@ -304,7 +304,7 @@ vec4 oxygenAtmosphereWaterSurfaceData(
     vec2 p = worldPos.xy;
     float time = frameTimeCounter;
     float waterNight =
-        oxygenAtmosphereWaterNightAmount(waterDayMoment);
+        cinematicFogWaterNightAmount(waterDayMoment);
     float daylightMask =
         1.0 -
         step(
@@ -340,13 +340,13 @@ vec4 oxygenAtmosphereWaterSurfaceData(
         fract(waterCycle)
     );
     vec4 motionProfile = mix(
-        oxygenAtmosphereWaterMotionProfile(styleA),
-        oxygenAtmosphereWaterMotionProfile(styleB),
+        cinematicFogWaterMotionProfile(styleA),
+        cinematicFogWaterMotionProfile(styleB),
         styleBlend
     );
     float flowAngle = mix(
-        oxygenAtmosphereWaterMotionAngle(styleA),
-        oxygenAtmosphereWaterMotionAngle(styleB),
+        cinematicFogWaterMotionAngle(styleA),
+        cinematicFogWaterMotionAngle(styleB),
         styleBlend
     );
     float frequencyScale = motionProfile.x;
@@ -380,8 +380,8 @@ vec4 oxygenAtmosphereWaterSurfaceData(
     vec2 q = p + warp;
 
     vec3 authoredData = mix(
-        oxygenAtmosphereWaterStyleSample(p, animatedTime, styleA),
-        oxygenAtmosphereWaterStyleSample(p, animatedTime, styleB),
+        cinematicFogWaterStyleSample(p, animatedTime, styleA),
+        cinematicFogWaterStyleSample(p, animatedTime, styleB),
         styleBlend
     );
     vec2 authoredSlope =
@@ -455,13 +455,13 @@ vec4 oxygenAtmosphereWaterSurfaceData(
 
     float impactHighlight = 0.0;
     float impactShadow = 0.0;
-    #if !defined VOXY_WATER && !defined OXYGEN_ATMOSPHERE_WATER_DISTANT_SURFACE
+    #if !defined VOXY_WATER && !defined CINEMATIC_FOG_WATER_DISTANT_SURFACE
         float impactStrength =
             rainStrength *
             clamp(rainImpactMask, 0.0, 1.0);
         if (impactStrength > 0.002) {
             vec4 rainImpact =
-                oxygenAtmosphereWaterRainImpactField(
+                cinematicFogWaterRainImpactField(
                     p,
                     animatedTime
                 );
@@ -500,17 +500,17 @@ vec4 oxygenAtmosphereWaterSurfaceData(
     );
 }
 
-#undef OXYGEN_ATMOSPHERE_WATER_SAMPLE
+#undef CINEMATIC_FOG_WATER_SAMPLE
 
-vec3 oxygenAtmosphereWaterNormal(vec4 surfaceData) {
+vec3 cinematicFogWaterNormal(vec4 surfaceData) {
     float normalHeight =
         max(WATER_TURBULENCE, 0.18) * 1.30;
     return normalize(vec3(-surfaceData.xy, normalHeight));
 }
 
-vec3 oxygenAtmosphereWaterTimeColor() {
-    #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
-        return oxygenAtmosphereWaterSurfacePalette(
+vec3 cinematicFogWaterTimeColor() {
+    #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
+        return cinematicFogWaterSurfacePalette(
             rainStrength
         );
     #else
@@ -518,12 +518,12 @@ vec3 oxygenAtmosphereWaterTimeColor() {
     #endif
 }
 
-vec3 oxygenAtmosphereWaterTimeColorVoxy(
+vec3 cinematicFogWaterTimeColorVoxy(
     float dayMixerV,
     float nightMixerV,
     float dayMomentV
 ) {
-    #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+    #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
         vec3 waterColor = dayBlendVoxy(
             vec3(0.052, 0.112, 0.122),
             vec3(0.038, 0.124, 0.142),
@@ -550,7 +550,7 @@ vec3 oxygenAtmosphereWaterTimeColorVoxy(
     #endif
 }
 
-vec3 oxygenAtmosphereWaterPigment(vec3 baseColor, vec4 surfaceData) {
+vec3 cinematicFogWaterPigment(vec3 baseColor, vec4 surfaceData) {
     vec3 surfaceColor = baseColor * surfaceData.z;
     vec3 ribbonColor =
         baseColor * 1.16 +
@@ -562,7 +562,7 @@ vec3 oxygenAtmosphereWaterPigment(vec3 baseColor, vec4 surfaceData) {
     );
 }
 
-vec3 oxygenAtmosphereWaterEnvironmentLighting(
+vec3 cinematicFogWaterEnvironmentLighting(
     vec3 realLight,
     vec3 skyReflection,
     vec3 baseColor,
@@ -571,12 +571,12 @@ vec3 oxygenAtmosphereWaterEnvironmentLighting(
     float visibleSky
 ) {
     vec3 pigment =
-        oxygenAtmosphereWaterPigment(baseColor, surfaceData);
+        cinematicFogWaterPigment(baseColor, surfaceData);
     vec3 litWater = realLight * pigment;
 
-    #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+    #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
         float nightAmount =
-            oxygenAtmosphereWaterNightAmount(waterDayMoment);
+            cinematicFogWaterNightAmount(waterDayMoment);
         float skyAccess =
             clamp(visibleSky, 0.0, 1.0);
         vec3 minimumEnvironment = mix(
@@ -612,7 +612,7 @@ vec3 oxygenAtmosphereWaterEnvironmentLighting(
     return litWater;
 }
 
-float oxygenAtmosphereWaterReflectionFresnel(
+float cinematicFogWaterReflectionFresnel(
     float fresnel,
     vec4 surfaceData,
     float waterDayMoment,
@@ -625,9 +625,9 @@ float oxygenAtmosphereWaterReflectionFresnel(
         1.0
     );
 
-    #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+    #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
         float nightAmount =
-            oxygenAtmosphereWaterNightAmount(waterDayMoment);
+            cinematicFogWaterNightAmount(waterDayMoment);
         float minimumReflection =
             0.018 +
             nightAmount * 0.095 +

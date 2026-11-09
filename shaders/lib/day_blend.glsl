@@ -1,6 +1,6 @@
 vec3 dayBlend(vec3 sunset, vec3 day, vec3 night) {
-    // f(x) = min(-((x-.25)^2)∙20 + 1.25, 1)
-    // g(x) = min(-((x-.75)^2)∙50 + 3.125, 1)
+    // f(x) = min(-((x-.25)^2)*20 + 1.25, 1)
+    // g(x) = min(-((x-.75)^2)*50 + 3.125, 1)
 
     vec3 dayColor = mix(sunset, day, dayMixer);
     vec3 nightColor = mix(sunset, night, nightMixer);
@@ -9,8 +9,8 @@ vec3 dayBlend(vec3 sunset, vec3 day, vec3 night) {
 }
 
 float dayBlendFloat(float sunset, float day, float night) {
-    // f(x) = min(-((x-.25)^2)∙20 + 1.25, 1)
-    // g(x) = min(-((x-.75)^2)∙50 + 3.125, 1)
+    // f(x) = min(-((x-.25)^2)*20 + 1.25, 1)
+    // g(x) = min(-((x-.75)^2)*50 + 3.125, 1)
 
     float dayValue = mix(sunset, day, dayMixer);
     float nightValue = mix(sunset, night, nightMixer);
@@ -21,8 +21,8 @@ float dayBlendFloat(float sunset, float day, float night) {
 // Voxy
 
 vec3 dayBlendVoxy(vec3 sunset, vec3 day, vec3 night, float dayMixerV, float nightMixerV, float dayMomentV) {
-    // f(x) = min(-((x-.25)^2)∙20 + 1.25, 1)
-    // g(x) = min(-((x-.75)^2)∙50 + 3.125, 1)
+    // f(x) = min(-((x-.25)^2)*20 + 1.25, 1)
+    // g(x) = min(-((x-.75)^2)*50 + 3.125, 1)
 
     vec3 dayColor = mix(sunset, day, dayMixerV);
     vec3 nightColor = mix(sunset, night, nightMixerV);
@@ -31,8 +31,8 @@ vec3 dayBlendVoxy(vec3 sunset, vec3 day, vec3 night, float dayMixerV, float nigh
 }
 
 float dayBlendFloatVoxy(float sunset, float day, float night, float dayMixerV, float nightMixerV, float dayMomentV) {
-    // f(x) = min(-((x-.25)^2)∙20 + 1.25, 1)
-    // g(x) = min(-((x-.75)^2)∙50 + 3.125, 1)
+    // f(x) = min(-((x-.25)^2)*20 + 1.25, 1)
+    // g(x) = min(-((x-.75)^2)*50 + 3.125, 1)
 
     float dayValue = mix(sunset, day, dayMixerV);
     float nightValue = mix(sunset, night, nightMixerV);

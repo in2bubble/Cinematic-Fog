@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - volumetric_clouds_end.glsl
+/* Cinematic Fog - volumetric_clouds_end.glsl
 Fast volumetric clouds (for The End) - MakeUp implementation
 */
 
@@ -118,25 +118,25 @@ vec3 get_end_cloud(vec3 eyeDirection, vec3 blockColor, float bright, float dithe
             float surface_inf = CLOUD_PLANE_CENTER - (current_value * dif_inf);
             float surface_sup = CLOUD_PLANE_CENTER + (current_value * dif_sup);
 
-            // --- OPTIMIZACIÓN: Reestructurar la lógica del bucle ---
+            // Loop logic restructured for speed
             float current_opacity = 0.0;
             float cloud_thickness = surface_sup - surface_inf;
 
             if (intersection_pos.y > surface_inf && intersection_pos.y < surface_sup) {
-                // Dentro de la nube
+                // Inside the cloud
                 current_opacity = min(increment_dist, cloud_thickness);
             }
             else if (cloud_thickness > 0.0 && i > 0) {
-                // Cerca del borde de la nube (desenfoque)
+                // Near the cloud edge (soft falloff)
                 float distance_aux = min(abs(intersection_pos.y - surface_inf), abs(intersection_pos.y - surface_sup));
                 if (distance_aux < dist_aux_coeff_blur) {
-                    // El cálculo original se simplifica a esto, que es más rápido.
+                    // The original calculation simplifies to this faster form.
                     float blur_factor = 1.0 - (distance_aux / dist_aux_coeff_blur);
                     current_opacity = min(blur_factor * increment_dist, cloud_thickness);
                 }
             }
             
-            // La lógica de acumulación y primer contacto se gestiona UNA SOLA VEZ.
+            // Accumulation and first-hit logic run only once.
             if (current_opacity > 0.0) {
                 cloud_value += current_opacity;
                 if (first_contact) {

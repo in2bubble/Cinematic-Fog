@@ -1,6 +1,6 @@
 #version 120
 #extension GL_ARB_shader_texture_lod : enable
-/* Oxygen Atmosphere - gbuffers_damagedblock.vsh
+/* Cinematic Fog - gbuffers_damagedblock.vsh
 Render: Damaged block effect
 
 Javier Garduño - GNU Lesser General Public License v3.0

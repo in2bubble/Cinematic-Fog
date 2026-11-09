@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - depth.glsl
+/* Cinematic Fog - depth.glsl
 Depth utilities.
 
 Javier Garduño - GNU Lesser General Public License v3.0

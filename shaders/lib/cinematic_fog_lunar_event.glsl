@@ -1,8 +1,8 @@
-/* Oxygen Atmosphere - shared lunar event helpers. */
+/* Cinematic Fog - shared lunar event helpers. */
 
-#define OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_INTENSITY 0.60
+#define CINEMATIC_FOG_LUNAR_ECLIPSE_INTENSITY 0.60
 
-float oxygenAtmosphereLunarEclipseAmount(int currentWorldDay) {
+float cinematicFogLunarEclipseAmount(int currentWorldDay) {
     float visualMoonStage = mod(float(currentWorldDay), 7.0);
     float isFullMoon =
         1.0 - step(0.5, abs(visualMoonStage - 3.0));

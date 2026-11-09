@@ -36,7 +36,7 @@ uniform float frameTimeCounter;
 uniform int frameCounter;
 uniform float wetness;
 
-#if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+#if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
     uniform sampler2D noisetex;
     uniform vec3 moonPosition;
 #endif
@@ -87,6 +87,7 @@ varying float exposure;
 
 /* Utility functions */
 
+#include "/lib/dh_scene.glsl"
 #include "/lib/basic_utils.glsl"
 #include "/lib/depth.glsl"
 
@@ -118,7 +119,7 @@ varying float exposure;
     #include "/lib/volumetric_light.glsl"
 #endif
 
-#if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+#if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
     vec3 renderDynamicLunarSystem(
         vec3 backgroundColor,
         vec3 eyeDirection,
@@ -287,7 +288,7 @@ varying float exposure;
         // Minecraft days. It remains a luminous copper atmospheric event,
         // rather than another ordinary dark phase.
         float lunarEclipse =
-            oxygenAtmosphereLunarEclipseAmount(worldDay);
+            cinematicFogLunarEclipseAmount(worldDay);
 
         // Derive the lunar tint from the local atmospheric color instead of a
         // fixed RGB value. Normalizing the tint preserves a stable luminance
@@ -388,13 +389,13 @@ varying float exposure;
                 1.0,
                 0.82,
                 lunarEclipse *
-                    OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_INTENSITY
+                    CINEMATIC_FOG_LUNAR_ECLIPSE_INTENSITY
             );
         vec3 scatteringColor = mix(
             adaptiveMoonTint * vec3(0.035, 0.055, 0.090),
             vec3(0.360, 0.025, 0.010),
             lunarEclipse *
-                OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_INTENSITY
+                CINEMATIC_FOG_LUNAR_ECLIPSE_INTENSITY
         );
         vec3 moonIntegratedBackground =
             backgroundColor +
@@ -410,6 +411,25 @@ void main() {
     vec4 blockColor = texture2DLod(colortex1, texcoord, 0);
     float d = texture2DLod(depthtex0, texcoord, 0).r;
     float linearDepth = ld(d);
+
+    // Distant Horizons: vanilla depth is 1.0 on LOD pixels, so fog needs the
+    // LOD position and the LOD render distance as its horizon.
+    float fogHorizon = far;
+    float lodMask = 0.0;
+    vec3 lodPlayerPosition = vec3(0.0);
+    bool isLodPixel = false;
+    #ifdef DISTANT_HORIZONS
+        float lodDepth = dhSceneDepth(texcoord);
+        isLodPixel = dhIsLodPixel(d, lodDepth);
+        fogHorizon = max(far, float(dhRenderDistance));
+        if (isLodPixel) {
+            lodMask = 1.0;
+            lodPlayerPosition = (
+                gbufferModelViewInverse *
+                vec4(dhViewPosition(texcoord, lodDepth), 1.0)
+            ).xyz;
+        }
+    #endif
 
     #if RAIN_PUDDLES == 1 && !defined NETHER && !defined THE_END
         if (isEyeInWater == 0) {
@@ -431,7 +451,7 @@ void main() {
 
     // Underwater fog
     if(isEyeInWater == 1) {
-        #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+        #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
             float underwaterDistance =
                 max(linearDepth * far * 0.5, 0.0);
             float absorptionDensity =
@@ -456,7 +476,7 @@ void main() {
             );
 
             vec3 volumeWaterColor =
-                oxygenAtmosphereUnderwaterPalette(
+                cinematicFogUnderwaterPalette(
                     rainStrength
                 );
             float underwaterSkylight = clamp(
@@ -661,7 +681,7 @@ void main() {
             vec3 moonlitHazeBase = mix(
                 vec3(0.130, 0.180, 0.290),
                 vec3(0.480, 0.085, 0.045),
-                OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING
+                CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING
             );
             vec3 moonlitHazeColor =
                 moonlitHazeBase *
@@ -696,13 +716,15 @@ void main() {
                 d,
                 atmosphericColor,
                 outdoorVisibility,
-                phaseDensity
+                phaseDensity,
+                fogHorizon,
+                lodPlayerPosition,
+                lodMask
             );
         }
     #endif
 
     #if MC_VERSION >= 11900
-        // if((blindness > .01 || darknessFactor > .01) && linearDepth > 0.999) {
         if((blindness > .01 || darknessFactor > .01) && linearDepth > 0.9) {
             blockColor.rgb = vec3(0.0);
         }
@@ -758,13 +780,13 @@ void main() {
             volumetricIntensity =
                 pow(clamp(volumetricIntensity, 0.0, 1.0), volumetricDayMixer) * 0.5 * abs(dayNightMix * 2.0 - 1.0);
 
-            #ifdef OXYGEN_ATMOSPHERE_STYLE
-                float oxygenAtmosphereShaftNight =
+            #ifdef CINEMATIC_FOG_STYLE
+                float cinematicFogShaftNight =
                     step(0.5, dayMoment) * nightMixer;
                 // Keep the direct solar halo controlled. The previous boost
                 // washed out most of the frame when the camera faced the sun.
                 volumetricIntensity *=
-                    0.82 * mix(1.0, 1.16, oxygenAtmosphereShaftNight);
+                    0.82 * mix(1.0, 1.16, cinematicFogShaftNight);
             #endif
 
             blockColor.rgb =
@@ -800,13 +822,13 @@ void main() {
             volumetricIntensity =
                 pow(clamp((volumetricIntensity + 0.5) * 0.666666666666666, 0.0, 1.0), volumetricDayMixer) * 0.6 * abs(dayNightMix * 2.0 - 1.0);
 
-            #ifdef OXYGEN_ATMOSPHERE_STYLE
-                float oxygenAtmosphereShaftNight =
+            #ifdef CINEMATIC_FOG_STYLE
+                float cinematicFogShaftNight =
                     step(0.5, dayMoment) * nightMixer;
                 // Match the screen-space shaft path to the restrained direct
                 // solar halo used above.
                 volumetricIntensity *=
-                    0.80 * mix(1.0, 1.16, oxygenAtmosphereShaftNight);
+                    0.80 * mix(1.0, 1.16, cinematicFogShaftNight);
             #endif
 
             blockColor.rgb =
@@ -817,8 +839,8 @@ void main() {
     // Compose the complete dynamic moon after clouds, atmospheric fog and
     // volumetric lighting. Its cloud-weighted HDR source then enters the same
     // TAA and bloom pipeline as the rest of the cinematic sky.
-    #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
-        if(isEyeInWater == 0 && d > 0.9999) {
+    #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
+        if(isEyeInWater == 0 && d > 0.9999 && !isLodPixel) {
             vec4 moonViewPosition =
                 gbufferProjectionInverse *
                 (vec4(texcoord, 1.0, 1.0) * 2.0 - 1.0);
@@ -831,7 +853,7 @@ void main() {
         }
     #endif
 
-    // Dentro de la nieve
+    // Inside snow
     #ifdef BLOOM
         if(isEyeInWater == 3) {
             blockColor.rgb =

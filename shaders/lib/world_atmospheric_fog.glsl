@@ -59,18 +59,35 @@ vec3 applyWorldAtmosphericFog(
     float sceneDepth,
     vec3 atmosphericColor,
     float outdoorVisibility,
-    float phaseDensity
+    float phaseDensity,
+    float fogHorizon,
+    vec3 lodPlayerPosition,
+    float lodMask
 ) {
-    vec3 playerPosition = worldFogPlayerPosition(uv, sceneDepth);
+    // lodMask is 1 where the pixel shows a Distant Horizons LOD. Vanilla depth
+    // reads 1.0 there, so the LOD position replaces the reconstruction.
+    vec3 playerPosition = mix(
+        worldFogPlayerPosition(uv, sceneDepth),
+        lodPlayerPosition,
+        lodMask
+    );
+    float skyMask = step(0.9999, sceneDepth) * (1.0 - lodMask);
     float reconstructedDistance = length(playerPosition);
     vec3 viewDirection = playerPosition / max(reconstructedDistance, 0.00001);
 
     // Sky depth and very distant geometry must converge to the same ray length.
     // Keeping this continuous removes the bright one-pixel depth seam at the
     // horizon when terrain switches between geometry and sky during movement.
-    float viewDistance = min(reconstructedDistance, far);
-    float farContinuity = smoothstep(far * 0.72, far * 0.98, viewDistance);
-    viewDistance = mix(viewDistance, far, farContinuity);
+    // fogHorizon is the vanilla far plane, or the LOD render distance when
+    // Distant Horizons extends the visible world.
+    float viewDistance = min(reconstructedDistance, fogHorizon);
+    float farContinuity = smoothstep(
+        fogHorizon * 0.72,
+        fogHorizon * 0.98,
+        viewDistance
+    );
+    farContinuity = max(farContinuity, skyMask);
+    viewDistance = mix(viewDistance, fogHorizon, farContinuity);
     playerPosition = viewDirection * viewDistance;
 
     if (viewDistance < 2.0) {

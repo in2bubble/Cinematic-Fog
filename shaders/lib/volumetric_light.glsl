@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - volumetric_clouds.glsl
+/* Cinematic Fog - volumetric_light.glsl
 Volumetric light - MakeUp implementation
 */
 

@@ -1,6 +1,6 @@
 #version 120
 #extension GL_ARB_shader_texture_lod : enable
-/* Oxygen Atmosphere - gbuffers_block.fsh
+/* Cinematic Fog - gbuffers_block.fsh
 Render: Generic blocks
 
 Javier Garduño - GNU Lesser General Public License v3.0

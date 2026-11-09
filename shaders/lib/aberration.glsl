@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - aberration.glsl
+/* Cinematic Fog - aberration.glsl
 Color aberration effect.
 */
 

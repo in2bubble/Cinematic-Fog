@@ -15,13 +15,13 @@ varying vec4 tintColor;
     #include "/src/taa_offset.glsl"
 #endif
 
-#include "/lib/oxygen_atmosphere_ftransform.glsl"
+#include "/lib/cinematic_fog_ftransform.glsl"
 
 // MAIN FUNCTION ------------------
 
 void main() {
     tintColor = gl_Color;
-    gl_Position = oxygenAtmosphereFtransform();
+    gl_Position = cinematicFogFtransform();
 
     #if AA_TYPE > 1
         gl_Position.xy += taaOffset * gl_Position.w;

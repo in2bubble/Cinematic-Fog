@@ -85,7 +85,7 @@ void main() {
 
     exposure = (exp(-exposure) * 3.03) + 0.6;
 
-    #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+    #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
         // Prevent auto exposure from undoing the intentionally restrained
         // overcast lighting. Night remains readable without becoming day-bright.
         exposure *= dayBlendFloat(0.90, 0.84, 0.76);
@@ -110,13 +110,13 @@ void main() {
 
         volumetricLightColor = dayBlend(LIGHT_SUNSET_COLOR, LIGHT_DAY_COLOR, LIGHT_NIGHT_COLOR);
 
-        #if defined OXYGEN_ATMOSPHERE_STYLE && !defined THE_END
-            float oxygenAtmosphereVolumetricNight =
+        #if defined CINEMATIC_FOG_STYLE && !defined THE_END
+            float cinematicFogVolumetricNight =
                 step(0.5, dayMoment) * nightMixer;
             vec3 moonShaftBase = mix(
                 vec3(0.130, 0.190, 0.330),
                 vec3(0.500, 0.090, 0.040),
-                OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING
+                CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING
             );
             vec3 moonShaftColor =
                 moonShaftBase *
@@ -124,13 +124,13 @@ void main() {
             volumetricLightColor = mix(
                 volumetricLightColor,
                 moonShaftColor,
-                oxygenAtmosphereVolumetricNight * 0.90
+                cinematicFogVolumetricNight * 0.90
             );
 
             vec3 rainyShaftColor = mix(
                 vec3(0.150, 0.205, 0.270),
                 vec3(0.300, 0.055, 0.030),
-                OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING
+                CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING
             );
             volumetricLightColor = mix(
                 volumetricLightColor,

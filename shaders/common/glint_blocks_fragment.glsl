@@ -13,7 +13,7 @@ varying float exposure;
 // MAIN FUNCTION ------------------
 
 void main() {
-    // Toma el color puro del bloque
+    // Take the raw block color
     vec4 blockColor = texture2D(tex, texcoord) * tintColor / max(0.001, exposure);
 
     #include "/src/writebuffers.glsl"

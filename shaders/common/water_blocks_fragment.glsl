@@ -163,7 +163,7 @@ void main() {
         vec3 waterNormalBase = vec3(0.0, 0.0, 1.0);
     #else
         vec4 waterSurfaceData =
-            oxygenAtmosphereWaterSurfaceData(
+            cinematicFogWaterSurfaceData(
                 worldposition.xzy,
                 dayMoment,
                 smoothstep(
@@ -176,7 +176,7 @@ void main() {
                 )
             );
         vec3 waterNormalBase =
-            oxygenAtmosphereWaterNormal(waterSurfaceData);
+            cinematicFogWaterNormal(waterSurfaceData);
     #endif
 
     vec3 surfaceNormal;
@@ -214,9 +214,9 @@ void main() {
                     vec3 preSnapPos = vWorldPos + offsetVector;
                     float texelSize = SHADOW_LOCK;
                     vec3 absPos = preSnapPos + cameraPosition;
-                    // Redondeo al bloque
+                    // Snap to the block grid
                     vec3 snappedAbsolute = floor(absPos * texelSize) / texelSize;
-                    snappedAbsolute += 0.5 / texelSize; // Centrar en el texel
+                    snappedAbsolute += 0.5 / texelSize; // Center on the texel
                     vec3 final_world_pos = (snappedAbsolute - cameraPosition) + vBias;
                     vec3 shadow_real_pos = get_shadow_pos(final_world_pos);
                 #else
@@ -251,9 +251,9 @@ void main() {
                 (directLightStrength * visibleSky * directLightColor) * (1.0 - rainStrength * 0.75) +
                 candleColor;
 
-            vec3 temporalWaterColor = oxygenAtmosphereWaterTimeColor();
+            vec3 temporalWaterColor = cinematicFogWaterTimeColor();
             blockColor.rgb =
-                oxygenAtmosphereWaterEnvironmentLighting(
+                cinematicFogWaterEnvironmentLighting(
                     realLight,
                     skyColorReflect,
                     temporalWaterColor,
@@ -273,7 +273,7 @@ void main() {
                 1.0
             );
 
-            fresnel = oxygenAtmosphereWaterReflectionFresnel(
+            fresnel = cinematicFogWaterReflectionFresnel(
                 fresnel,
                 waterSurfaceData,
                 dayMoment,
@@ -295,7 +295,7 @@ void main() {
 
         #endif
 
-    } else {  // Otros translúcidos
+    } else {  // Other translucent blocks
         blockColor = texture2D(tex, texcoord);
 
         blockColor *= tintColor;

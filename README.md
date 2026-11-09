@@ -1,9 +1,9 @@
-# Oxygen Atmosphere 1.1
+# Cinematic Fog
 
 
 ## Overview
 
-**Oxygen Atmosphere** is a cinematic, highly-optimized shaderpack designed to give Minecraft a cool, misty, and deeply atmospheric aesthetic. Built around a moody blue-gray color palette and dynamic visual systems, it transforms your world with cinematic realism while maintaining exceptional performance. A rare Blood Moon night brings a dramatic crimson atmosphere to the moonlight, fog, clouds, and landscape.
+**Cinematic Fog** is a cinematic, highly-optimized shaderpack designed to give Minecraft a cool, misty, and deeply atmospheric aesthetic. Built around a moody blue-gray color palette and dynamic visual systems, it transforms your world with cinematic realism while maintaining exceptional performance. A rare Blood Moon night brings a dramatic crimson atmosphere to the moonlight, fog, clouds, and landscape.
 
 ## Key Highlights
 
@@ -15,16 +15,18 @@
 
 ## Credits
 
-Oxygen Atmosphere is an independent modified shaderpack based on
+Cinematic Fog is an independent modified shaderpack based on
 [MakeUp Ultra Fast](https://modrinth.com/shader/makeup-ultra-fast-shaders)
 9.5c, originally created by **Javier Garduño (KDXavier)**.
+
+Modified by **in2bubble**, 2026.
 
 - [Javier Garduño on GitHub](https://github.com/javiergcim)
 - [MakeUp Ultra Fast source repository](https://github.com/javiergcim/MakeUpUltraFast)
 - [Original shader on Modrinth](https://modrinth.com/shader/makeup-ultra-fast-shaders)
 - [KDXavier on Modrinth](https://modrinth.com/user/KDXavier)
 
-Oxygen Atmosphere is not an official MakeUp Ultra Fast release.
+Cinematic Fog is not an official MakeUp Ultra Fast release.
 
 Texture provenance is documented separately in `ASSET_SOURCES.md`.
 

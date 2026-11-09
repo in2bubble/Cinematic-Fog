@@ -42,16 +42,20 @@ uniform int frameCounter;
     uniform vec3 sunPosition;
 
     #if defined DISTANT_HORIZONS
-        uniform sampler2D dhDepthTex0;
-        uniform float dhNearPlane;
-        uniform float dhFarPlane;
         uniform float viewWidth;
         uniform float viewHeight;
     #endif
 #endif
 
-#if defined OXYGEN_ATMOSPHERE_STYLE && !defined UNKNOWN_DIM && !defined NETHER && !defined THE_END
-    uniform sampler2D oxygenAtmosphereSunTexture;
+#if defined CINEMATIC_FOG_STYLE && !defined UNKNOWN_DIM && !defined NETHER && !defined THE_END
+    #ifdef IS_IRIS
+        uniform sampler2D cinematicFogSunTexture;
+    #else
+        // OptiFine has no custom sampler names: shaders.properties binds the
+        // same sun PNG to colortex13, which no program renders into.
+        uniform sampler2D colortex13;
+        #define cinematicFogSunTexture colortex13
+    #endif
 
     #if V_CLOUDS == 0
         uniform vec3 sunPosition;
@@ -86,6 +90,7 @@ varying vec3 upVector;  // Flat
 
 /* Utility functions */
 
+#include "/lib/dh_scene.glsl"
 #include "/lib/depth.glsl"
 #include "/lib/luma.glsl"
 
@@ -111,8 +116,8 @@ varying vec3 upVector;  // Flat
     #endif
 #endif
 
-#if defined OXYGEN_ATMOSPHERE_STYLE && !defined UNKNOWN_DIM && !defined NETHER && !defined THE_END
-    vec3 applyOxygenAtmosphereSun(
+#if defined CINEMATIC_FOG_STYLE && !defined UNKNOWN_DIM && !defined NETHER && !defined THE_END
+    vec3 applyCinematicFogSun(
         vec3 backgroundColor,
         vec3 eyeDirection,
         float cloudOcclusion
@@ -144,7 +149,7 @@ varying vec3 upVector;  // Flat
         );
         vec2 authoredSunUv = authoredSunTangent / 0.190 + 0.5;
         vec4 authoredSun = texture2D(
-            oxygenAtmosphereSunTexture,
+            cinematicFogSunTexture,
             authoredSunUv
         );
 
@@ -233,7 +238,13 @@ void main() {
     vec4 blockColor = texture2DLod(colortex1, texcoord, 0);
     float depth = texture2DLod(depthtex0, texcoord, 0).r;
     float linearDepth = ld(depth);
-    float oxygenAtmosphereCloudOcclusion = 0.0;
+    // Distant Horizons LOD pixels have vanilla depth 1.0 but are not sky: they
+    // must not receive the sun disc.
+    bool isLodPixel = false;
+    #ifdef DISTANT_HORIZONS
+        isLodPixel = dhIsLodPixel(depth, dhSceneDepth(texcoord));
+    #endif
+    float cinematicFogCloudOcclusion = 0.0;
     float terrainSkyExposure =
         texture2DLod(colortex2, texcoord, 0).r;
 
@@ -270,15 +281,15 @@ void main() {
             #else
                 float cloudOcclusion;
                 blockColor.rgb = get_cloud(eyeDirection, blockColor.rgb, bright, dither, cameraPosition, CLOUD_STEPS_AVG, umbral, cloudColor, darkCloudColor, cloudOcclusion);
-                oxygenAtmosphereCloudOcclusion = cloudOcclusion;
+                cinematicFogCloudOcclusion = cloudOcclusion;
             #endif
 
             // Keep the authored solar disc in the foreground of the cloud
             // layer. Rendering it before get_cloud made dense sun-lit cloud
             // scattering replace the disc with a featureless bright patch.
-            #if defined OXYGEN_ATMOSPHERE_STYLE && !defined UNKNOWN_DIM && !defined NETHER && !defined THE_END
-                if(isEyeInWater == 0) {
-                    blockColor.rgb = applyOxygenAtmosphereSun(
+            #if defined CINEMATIC_FOG_STYLE && !defined UNKNOWN_DIM && !defined NETHER && !defined THE_END
+                if(isEyeInWater == 0 && !isLodPixel) {
+                    blockColor.rgb = applyCinematicFogSun(
                         blockColor.rgb,
                         eyeDirection,
                         cloudOcclusion
@@ -302,9 +313,9 @@ void main() {
                 vec4 farPlaneClipPos = gbufferModelViewInverse * vec4(fragposition.xyz, 0.0);
                 eyeDirection = normalize(farPlaneClipPos.xyz);
 
-                #if defined OXYGEN_ATMOSPHERE_STYLE && !defined UNKNOWN_DIM
-                    if(isEyeInWater == 0) {
-                    blockColor.rgb = applyOxygenAtmosphereSun(
+                #if defined CINEMATIC_FOG_STYLE && !defined UNKNOWN_DIM
+                    if(isEyeInWater == 0 && !isLodPixel) {
+                    blockColor.rgb = applyCinematicFogSun(
                         blockColor.rgb,
                         eyeDirection,
                         0.0
@@ -341,9 +352,9 @@ void main() {
     // Underwater sky
     if(isEyeInWater == 1) {
         if(linearDepth > 0.9999) {
-            #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+            #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
                 vec3 underwaterSkyColor =
-                    oxygenAtmosphereUnderwaterPalette(
+                    cinematicFogUnderwaterPalette(
                         rainStrength
                     ) * 1.12;
                 vec3 refractedSky =
@@ -390,7 +401,7 @@ void main() {
     gl_FragData[0] = vec4(blockColor.rgb, depth);
     gl_FragData[1] = blockColor;
     gl_FragData[2] = vec4(
-        oxygenAtmosphereCloudOcclusion,
+        cinematicFogCloudOcclusion,
         terrainSkyExposure,
         0.0,
         1.0

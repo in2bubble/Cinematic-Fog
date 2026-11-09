@@ -194,7 +194,7 @@ void main() {
         }
     #endif
 
-    // Toma el color puro del bloque
+    // Take the raw block color
     #if defined GBUFFER_WEATHER
         vec4 weatherTexel = texture2D(tex, texcoord);
         vec4 blockColor = weatherTexel * tintColor;
@@ -343,9 +343,9 @@ void main() {
             vec3 preSnapPos = vWorldPos + offsetVector;
             float texelSize = SHADOW_LOCK;
             vec3 absPos = preSnapPos + cameraPosition;
-            // Redondeo al bloque
+            // Snap to the block grid
             vec3 snappedAbsolute = floor(absPos * texelSize) / texelSize;
-            snappedAbsolute += 0.5 / texelSize; // Centrar en el texel
+            snappedAbsolute += 0.5 / texelSize; // Center on the texel
             vec3 final_world_pos = (snappedAbsolute - cameraPosition) + vBias;
             vec3 shadow_real_pos = get_shadow_pos(final_world_pos);
         #else
@@ -395,10 +395,7 @@ void main() {
         #endif
 
         blockColor.rgb *= mix(realLight, vec3(1.0), nightVision * 0.125);
-        blockColor.rgb *= mix(vec3(1.0, 1.0, 1.0), vec3(NV_COLOR_R, NV_COLOR_G, NV_COLOR_B), nightVision);
 
-        // DEBUG
-        // blockColor = vec4(vec3(directLightStrength), 1.0);
     #endif
 
     #if defined GBUFFER_ENTITIES
@@ -416,10 +413,6 @@ void main() {
     #if MC_VERSION < 11300 && defined GBUFFER_TEXTURED
         blockColor.rgb *= 1.5;
     #endif
-
-    // DEBUG
-    // blockColor = vec4(omniLight, 1.0);
-    // blockColor = vec4(vec3(directLightStrength), 1.0);
 
     #ifdef GBUFFER_WEATHER
         #include "/src/weather_fragment.glsl"

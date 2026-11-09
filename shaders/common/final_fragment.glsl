@@ -66,10 +66,12 @@ uniform sampler2D colortex1;
 uniform sampler2D depthtex0;
 uniform float viewWidth;
 
-#if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+#include "/lib/dh_scene.glsl"
+
+#if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
     uniform float dayMoment;
     uniform int worldDay;
-    #include "/lib/oxygen_atmosphere_lunar_event.glsl"
+    #include "/lib/cinematic_fog_lunar_event.glsl"
 #endif
 
 /* Ins / Outs */
@@ -104,42 +106,49 @@ void main() {
     blockColor = custom_sigmoid(blockColor);
 
     // Color-grading -----
-    #if defined OXYGEN_ATMOSPHERE_STYLE && !defined NETHER && !defined THE_END
+    #if defined CINEMATIC_FOG_STYLE && !defined NETHER && !defined THE_END
         float terrainDepth = texture2D(depthtex0, texcoord).r;
         float terrainMask = 1.0 - smoothstep(0.9995, 1.0, terrainDepth);
+        #ifdef DISTANT_HORIZONS
+            // Distant Horizons LODs count as terrain for color grading.
+            terrainMask = max(
+                terrainMask,
+                float(dhIsLodPixel(terrainDepth, dhSceneDepth(texcoord)))
+            );
+        #endif
 
         // Smooth peaks at noon and midnight leave dawn and dusk to the shared
         // twilight palette without introducing a discontinuity at sunset.
-        float oxygenAtmosphereNoon =
+        float cinematicFogNoon =
             1.0 - clamp(abs(dayMoment - 0.25) * 4.0, 0.0, 1.0);
-        oxygenAtmosphereNoon =
-            oxygenAtmosphereNoon * oxygenAtmosphereNoon *
-            (3.0 - 2.0 * oxygenAtmosphereNoon);
-        float oxygenAtmosphereMidnight =
+        cinematicFogNoon =
+            cinematicFogNoon * cinematicFogNoon *
+            (3.0 - 2.0 * cinematicFogNoon);
+        float cinematicFogMidnight =
             1.0 - clamp(abs(dayMoment - 0.75) * 4.0, 0.0, 1.0);
-        oxygenAtmosphereMidnight =
-            oxygenAtmosphereMidnight * oxygenAtmosphereMidnight *
-            (3.0 - 2.0 * oxygenAtmosphereMidnight);
+        cinematicFogMidnight =
+            cinematicFogMidnight * cinematicFogMidnight *
+            (3.0 - 2.0 * cinematicFogMidnight);
 
         vec3 twilightTint = vec3(1.035, 1.000, 0.940);
         vec3 noonTint = vec3(1.020, 0.985, 1.015);
-        float oxygenAtmosphereLunarEclipse =
-            oxygenAtmosphereLunarEclipseAmount(worldDay);
+        float cinematicFogLunarEclipse =
+            cinematicFogLunarEclipseAmount(worldDay);
         vec3 midnightTint = mix(
             vec3(0.860, 0.960, 1.160),
             vec3(1.320, 0.800, 0.720),
-            oxygenAtmosphereLunarEclipse *
-                OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_INTENSITY
+            cinematicFogLunarEclipse *
+                CINEMATIC_FOG_LUNAR_ECLIPSE_INTENSITY
         );
         vec3 temporalTint = mix(
             twilightTint,
             noonTint,
-            oxygenAtmosphereNoon
+            cinematicFogNoon
         );
         temporalTint = mix(
             temporalTint,
             midnightTint,
-            oxygenAtmosphereMidnight
+            cinematicFogMidnight
         );
         temporalTint /= max(
             dot(temporalTint, vec3(0.2126, 0.7152, 0.0722)),
@@ -153,8 +162,8 @@ void main() {
         );
         float terrainSaturation =
             0.92 -
-            oxygenAtmosphereNoon * 0.06 -
-            oxygenAtmosphereMidnight * 0.12;
+            cinematicFogNoon * 0.06 -
+            cinematicFogMidnight * 0.12;
         terrainColor = mix(
             vec3(terrainLuma),
             terrainColor,
@@ -171,8 +180,8 @@ void main() {
             vec3(0.009, 0.011, 0.014) * terrainShadows;
         float terrainExposure =
             0.96 -
-            oxygenAtmosphereNoon * 0.05 -
-            oxygenAtmosphereMidnight * 0.11;
+            cinematicFogNoon * 0.05 -
+            cinematicFogMidnight * 0.11;
         terrainColor *= terrainExposure;
 
         blockColor = mix(blockColor, terrainColor, terrainMask);
@@ -182,18 +191,11 @@ void main() {
         blockColor *= mix(
             vec3(1.0),
             vec3(0.90, 0.95, 1.04),
-            oxygenAtmosphereMidnight * 0.55
+            cinematicFogMidnight * 0.55
         );
 
         blockColor = clamp(blockColor, 0.0, 1.0);
     #endif
-
-    // DEVELOPER: If your post processing effect only involves the current pixel,
-    // it can be placed here. For example:
-
-    // Saturation:
-    // float actual_luma = luma(blockColor);
-    // blockColor = mix(vec3(actual_luma), blockColor, 1.5);
 
     // Color-blindness correction
     #ifdef COLOR_BLINDNESS

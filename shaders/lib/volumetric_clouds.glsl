@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - volumetric_clouds.glsl
+/* Cinematic Fog - volumetric_clouds.glsl
 Fast volumetric clouds - MakeUp implementation
 */
 
@@ -59,11 +59,11 @@ vec3 get_cloud(vec3 eyeDirection, vec3 blockColor, float bright, float dither, v
             float cloud_thickness = surface_sup - surface_inf;
 
             if (intersection_pos.y > surface_inf && intersection_pos.y < surface_sup) {
-                // Dentro de la nube
+                // Inside the cloud
                 current_opacity = min(increment_dist, cloud_thickness);
             }
             else if (cloud_thickness > 0.0 && i > 0) {
-                // Cerca del borde de la nube (desenfoque)
+                // Near the cloud edge (soft falloff)
                 float distance_aux = min(abs(intersection_pos.y - surface_inf), abs(intersection_pos.y - surface_sup));
                 if (distance_aux < dist_aux_coeff_blur) {
                     float blur_factor = 1.0 - (distance_aux / dist_aux_coeff_blur);
@@ -82,7 +82,7 @@ vec3 get_cloud(vec3 eyeDirection, vec3 blockColor, float bright, float dither, v
             intersection_pos += increment;
         }
 
-        #ifdef OXYGEN_ATMOSPHERE_STYLE
+        #ifdef CINEMATIC_FOG_STYLE
             cloud_value = clamp((cloud_value / opacity_dist) * 1.35, 0.0, 1.0);
         #else
             cloud_value = clamp(cloud_value / opacity_dist, 0.0, 1.0);
@@ -91,8 +91,8 @@ vec3 get_cloud(vec3 eyeDirection, vec3 blockColor, float bright, float dither, v
 
         float att_factor = mix(1.0, 0.75, bright * (1.0 - rainStrength));
 
-        // --- OPTIMIZACIÓN: Reemplazar pow() por aproximaciones con sqrt() ---
-        // pow(x, 0.25) es mucho más rápido y visualmente casi idéntico a pow(x, 0.3) o pow(x, 0.4)
+        // Replace pow() with sqrt() approximations
+        // pow(x, 0.25) is much faster and looks almost the same as pow(x, 0.3) or pow(x, 0.4)
         float density_approx = sqrt(sqrt(density)); // x^0.25
 
         #if CLOUD_VOL_STYLE == 1
@@ -102,7 +102,7 @@ vec3 get_cloud(vec3 eyeDirection, vec3 blockColor, float bright, float dither, v
         #endif
 
         float cloud_value_approx = sqrt(sqrt(cloud_value));
-        #ifdef OXYGEN_ATMOSPHERE_STYLE
+        #ifdef CINEMATIC_FOG_STYLE
             cloudColor = mix(
                 cloudColor,
                 cloudColor * 2.4,

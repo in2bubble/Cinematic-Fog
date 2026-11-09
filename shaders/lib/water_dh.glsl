@@ -1,10 +1,10 @@
-/* Oxygen Atmosphere - water_dh.glsl
+/* Cinematic Fog - water_dh.glsl
 Water reflection and refraction related functions (dh).
 */
 
-#define OXYGEN_ATMOSPHERE_WATER_DISTANT_SURFACE
-#include "/lib/oxygen_atmosphere_water_surface.glsl"
-#undef OXYGEN_ATMOSPHERE_WATER_DISTANT_SURFACE
+#define CINEMATIC_FOG_WATER_DISTANT_SURFACE
+#include "/lib/cinematic_fog_water_surface.glsl"
+#undef CINEMATIC_FOG_WATER_DISTANT_SURFACE
 
 #if SUN_REFLECTION == 1
     #if !defined NETHER && !defined THE_END

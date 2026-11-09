@@ -1,7 +1,7 @@
 #version 400 compatibility
 #extension GL_ARB_shader_texture_lod : enable
 /*
- * Oxygen Atmosphere - procedural interactive grass
+ * Cinematic Fog - procedural interactive grass
  *
  * Clean-room implementation: the geometry, distribution, wind and player
  * response below are constructed directly from elementary vector geometry.
@@ -77,13 +77,26 @@
 // invocation zero also forwards the source triangle: 3 + (3 * 6) = 21.
 layout(triangles) in;
 layout(invocations = GRASS_INVOCATIONS) in;
-layout(triangle_strip, max_vertices = 21) out;
+#if GRASS_MODE == 0
+    // Pass-through only. The declared output size (vertices x components)
+    // sets how many geometry threads the GPU can keep in flight; declaring 21
+    // here made every leaf and flower triangle pay for blades it never emits.
+    layout(triangle_strip, max_vertices = 3) out;
+#else
+    layout(triangle_strip, max_vertices = 21) out;
+#endif
 
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferProjection;
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;
-uniform vec3 relativeEyePosition;
+#ifdef IS_IRIS
+    uniform vec3 relativeEyePosition;
+#else
+    // OptiFine lacks this uniform: the player is treated as the camera,
+    // which is exact in first person.
+    const vec3 relativeEyePosition = vec3(0.0);
+#endif
 uniform float frameTimeCounter;
 uniform sampler2D tex;
 
@@ -476,6 +489,7 @@ void emitSimplePhysicalBlade(
     EndPrimitive();
 }
 
+
 void emitBlade(
     vec3 weights,
     float bladeChannel,
@@ -850,7 +864,8 @@ void emitVanillaGrassCluster(
         floor(worldTriangleCenter.z) + 0.5 - cameraPosition.z
     );
 
-    for (int bladeIndex = 0; bladeIndex < 3; ++bladeIndex) {
+        const int clusterBlades = 3;
+    for (int bladeIndex = 0; bladeIndex < clusterBlades; ++bladeIndex) {
         float globalIndex = float(gl_InvocationID * 3 + bladeIndex);
         float channel = globalIndex * 7.0;
         float radialSample = fract(
@@ -912,6 +927,7 @@ void main() {
         }
         return;
     #else
+
         // Replacement and full-meadow modes both preserve every source vanilla
         // plant as a distinct physical cluster. Full mode additionally grows
         // the lower meadow layer from grass-block top faces farther below.

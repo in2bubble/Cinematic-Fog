@@ -76,14 +76,14 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
         // Minimal light
         vec3 omniColor = mix(ZenithSkyColorRGB, directLightColor * 0.45, OMNI_TINT);
         float omniColorLuma = colorAverage(omniColor);
-        // --- OPTIMIZACIÓN #3: Prevenir división por cero ---
+        // Prevent division by zero
         float lumaRatio = AVOID_DARK_LEVEL / max(omniColorLuma, 0.0001);
         vec3 omniColorMin = omniColor * lumaRatio;
         omniColor = max(omniColor, omniColorMin);
 
         vec3 omniLight = mix(omniColorMin, omniColor, visibleSky) * omniStrength;
 
-        #ifdef OXYGEN_ATMOSPHERE_STYLE
+        #ifdef CINEMATIC_FOG_STYLE
             float directionalScale = dayBlendFloatVoxy(
                 0.46, 0.42, 0.28,
                 dayMixerV, nightMixerV, dayMomentV
@@ -137,7 +137,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
         #ifndef SHADOW_CASTING
             // Fake shadows
             if (isEyeInWater == 0) {
-                // Reemplazar pow(x, 10.0) con multiplicaciones ---
+                // Replace pow(x, 10.0) with multiplications
                 float visSky2 = visibleSky * visibleSky;
                 float visSky4 = visSky2 * visSky2;
                 float visSky8 = visSky4 * visSky4;
@@ -150,15 +150,9 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
         #endif
     #endif
 
-    // if (customId == ENTITY_EMMISIVE) {
-    //     directLightStrength = 10.0;
-    // } else if (customId == ENTITY_S_EMMISIVE) {
-    //     directLightStrength = 1.0;
-    // }
-
     // Fog Vertex
 
-    // 1. Reconstruir posición en clip space
+    // 1. Rebuild the clip-space position
     vec2 ndc = (gl_FragCoord.xy / vec2(viewWidth, viewHeight)) * 2.0 - 1.0;
     float depth = gl_FragCoord.z * 2.0 - 1.0;
     vec4 clipPos = vec4(ndc, depth, 1.0);
@@ -167,7 +161,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
     vec4 worldPos = vxViewProjInv * clipPos;
     worldPos /= worldPos.w;
 
-    // 3. La distancia desde la cámara (equivalente a gl_FogFragCoord)
+    // 3. Distance from the camera (same as gl_FogFragCoord)
     float fogFragCoord = length(worldPos.xyz);
 
     vec2 eyeBrightSmoothFloat = vec2(eyeBrightnessSmooth);
@@ -253,7 +247,6 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
     #endif
 
     blockColor.rgb *= mix(realLight, vec3(1.0), nightVision * 0.125);
-    blockColor.rgb *= mix(vec3(1.0, 1.0, 1.0), vec3(NV_COLOR_R, NV_COLOR_G, NV_COLOR_B), nightVision);
 
     blockColor = clamp(blockColor, vec4(0.0), vec4(vec3(50.0), 1.0));
 

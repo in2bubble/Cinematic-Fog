@@ -15,7 +15,7 @@
 
     // ---- Original Light Vertex Logic
 
-    // Luz nativa (lmcoord.x: candela, lmcoord.y: cielo) ----
+    // Native light (lmcoord.x: block light, lmcoord.y: sky) ----
     #if defined THE_END || defined NETHER
         vec2 illumination = vec2(lmcoord.x, 1.0);
     #else
@@ -29,12 +29,12 @@
         visibleSky = (visibleSky * 0.6) + 0.4;
     #endif
 
-    // Intensidad y color de luz de candelas
+    // Block light intensity and color
     float candle_luma = illumination.x * sqrt(illumination.x);
     vec3 candleColor = CANDLE_BASELIGHT * (candle_luma + sixthPow(illumination.x * 1.17));
     candleColor = clamp(candleColor, vec3(0.0), vec3(4.0));
 
-    // Atenuación por dirección de luz directa ===================================
+    // Direct light attenuation by direction ===================================
     #if defined THE_END || defined NETHER
         vec3 astroVector = normalize(vxModelView * vec4(0.0, 0.89442719, 0.4472136, 0.0)).xyz;
     #else
@@ -45,7 +45,7 @@
     normal = mat3(vxModelView) * normal;
     float astroLightStrength;
 
-    // Comprobar la longitud al cuadrado (dot product) es mucho más rápido que la longitud (sqrt).
+    // Checking the squared length (dot product) is much faster than the length (sqrt).
     if (dot(normal, normal) > 0.0001) {  // Workaround for undefined normals
         normal = normalize(normal);
         astroLightStrength = dot(normal, astroVector);
@@ -63,7 +63,7 @@
     // Omni light intensity changes by angle
     float omniStrength = ((directLightStrength + 1.0) * 0.25) + 0.75;
 
-    // Calculamos color de luz directa
+    // Direct light color
     #if defined UNKNOWN_DIM
         vec3 directLightColor = texture2D(lightmap, vec2(0.0, lmcoord.y)).rgb;
     #else

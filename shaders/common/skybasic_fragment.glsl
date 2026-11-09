@@ -75,7 +75,7 @@ void main() {
             background_color.rgb = xyzToRgb(background_color.rgb);
         #else
 
-            // Toma el color puro del bloque
+            // Take the raw block color
             vec4 background_color = texture2DLod(gaux4, gl_FragCoord.xy * vec2(pixelSizeX, pixelSizeY), 0);
         #endif
 

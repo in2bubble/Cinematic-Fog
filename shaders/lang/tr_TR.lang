@@ -1,21 +1,10 @@
 #Profiles
 ############################
-profile.no_effects=Efekt yok
-profile.shadowless_low=Gölgesiz Düşük
-profile.shadowless_medium=Gölgesiz Orta
-profile.shadowless_high=Gölgesiz Yüksek
-profile.low=Düşük
-profile.medium=Orta
 profile.high=Yüksek
-profile.extremeplus=Yüksek (AD)
 
-profile.comment="Gölgesiz" profiller, gölgeler göz ardı edilerek düşük performanslı makineler için tasarlanmıştır. Geleneksel profiller yavaş yavaş daha kaliteli gölgeler ve daha gelişmiş ağır efektler ekler. Lütfen mevcut seçenekleri deneyin ve sizin için en iyi kombinasyonu bulun.
 
 #About
 #############################
-option.ACERCADE=Oxygen Atmosphere 1.1
-option.ACERCADE.comment=Bu shaderı kullandığınız için teşekkür ederiz! :). Daha iyi kalite için Optifine yerel kalite kontrollerini normal veya varsayılan değerlere ayarlayın.
-value.ACERCADE.0=v.9.5c
 
 #Options
 #############################
@@ -54,7 +43,6 @@ option.DOF=Alan derinliği
 
 option.DOF_STRENGTH=AD gücü
 
-option.DOF_SAMPLES_FACTOR=AD örnekleri faktörü
 
 option.AO=Ortam aydınlatması
 value.AO.0=Kapalı
@@ -75,25 +63,13 @@ option.MOTION_BLUR_SAMPLES=Hareket bulanıklığı örnekleri
 
 option.VANILLA_WATER=Vanilla tarzı su
 
-option.WATER_TEXTURE=Su dokusu
-value.WATER_TEXTURE.0=Hayır
-value.WATER_TEXTURE.1=Evet
 
-option.WATER_COLOR_SOURCE=Su rengi
-value.WATER_COLOR_SOURCE.0=Shader şeması
-value.WATER_COLOR_SOURCE.1=Kaynak paketi
 
-option.REFLECTION=Yansıma
-value.REFLECTION.0=Kapalı
-value.REFLECTION.1=Açık
 
 option.REFRACTION=Işık kırılması
 value.REFRACTION.0=Kapalı
 value.REFRACTION.1=Açık
 
-option.SSR_TYPE=Yansıma türü
-value.SSR_TYPE.0=Ters çevrilmiş
-value.SSR_TYPE.1=Işık yürüyüşü
 
 option.SUN_REFLECTION=Güneş yansıması
 value.SUN_REFLECTION.0=Kapalı
@@ -127,7 +103,7 @@ value.COLOR_SCHEME.3=Legacy
 value.COLOR_SCHEME.4=Captain
 value.COLOR_SCHEME.5=Psychedelic
 value.COLOR_SCHEME.6=Cocoa
-value.COLOR_SCHEME.8=Oxygen Atmosphere
+value.COLOR_SCHEME.8=Cinematic Fog
 value.COLOR_SCHEME.99=Özel
 
 option.LIGHT_SUNSET_COLOR_R=Gün batımı ışığı R
@@ -170,9 +146,6 @@ option.WATER_COLOR_R=Su R
 option.WATER_COLOR_G=Su G
 option.WATER_COLOR_B=Su B
 
-option.NV_COLOR_R=Gece görüşü R çarpanı
-option.NV_COLOR_G=Gece görüşü G çarpanı
-option.NV_COLOR_B=Gece görüşü B çarpanı
 
 option.OMNI_TINT_CUSTOM=Çok yönlü renk tonu
 
@@ -234,21 +207,14 @@ value.BLOCKLIGHT_TEMP.4=Beyaz ışık
 
 option.sunPathRotation=Güneş açısı
 
-option.USE_BASIC_SH=Özel boyutsal basit shader
 
 option.MATERIAL_GLOSS=Malzeme parlaklığı
 
 option.DYN_HAND_LIGHT=Sahte dinamik ışık
 
 #Screens
-screen.ADVANCED_SCREEN=Gelişmiş seçenekler
-screen.ADVANCED_SCREEN.comment=Gelişmiş seçenekleri ayarlayın.
 
-screen.COMPATIBILITY_SCREEN=Uyumluluk
-screen.COMPATIBILITY_SCREEN.comment=Uyumluluk seçeneklerini ayarlayın.
 
-screen.SHADOWS_SCREEN=Gölgeler
-screen.SHADOWS_SCREEN.comment=Gölge seçeneklerini ayarlayın.
 
 option.SHADOW_LOCK=Pixel locked shadows
 value.SHADOW_LOCK.0=Disabled
@@ -258,37 +224,12 @@ value.SHADOW_LOCK.64=64x64
 value.SHADOW_LOCK.128=128x128
 value.SHADOW_LOCK.256=256x256
 
-screen.DOF_SCREEN=Alan derinliği
-screen.DOF_SCREEN.comment=Alan derinliği (AD) seçeneklerini ayarlayın.
 
-screen.AO_SCREEN=Ortam aydınlatması
-screen.AO_SCREEN.comment=Ortam aydınlatması (OA) seçeneklerini ayarlayın.
 
-screen.WATER_SCREEN=Su
-screen.WATER_SCREEN.comment=Su seçeneklerini ayarlayın.
 
-screen.POST_SCREEN= İleri efektler
-screen.POST_SCREEN.comment=İleri efekt seçeneklerini ayarlayın.
 
-screen.LIGHT_SCREEN=Işık
-screen.LIGHT_SCREEN.comment=Işık seçeneklerini ayarlayın.
 
-screen.CLOUDS_SCREEN=Güneş ve bulutlar
-screen.CLOUDS_SCREEN.comment=Güneş ve bulut seçeneklerini ayarlayın.
 
-screen.FOG_SCREEN=Sis
-screen.FOG_SCREEN.comment=Sis seçeneklerini ayarlayın.
 
-screen.MOTION_BLUR_SCREEN=Hareket bulanıklığı
-screen.MOTION_BLUR_SCREEN.comment=Hareket bulanıklığı seçeneklerini ayarlayın.
 
-screen.ACCESIBILITY_SCREEN=Erişilebilirlik
-screen.ACCESIBILITY_SCREEN.comment=Erişilebilirlik seçeneklerini ayarlayın.
 
-screen.CUSTOM_COLORS_SCREEN=Özel renkler
-screen.CUSTOM_COLORS_SCREEN.comment=Özel renkleri ayarla
-screen.CUSTOM_COLORS_DAY=Gündüz özel renkleri
-screen.CUSTOM_COLORS_SUNSET=Gün batımı/şafak özel renkleri
-screen.CUSTOM_COLORS_NIGHT=Gece özel renkleri
-screen.CUSTOM_COLORS_WATER=Su özel rengi
-screen.CUSTOM_COLORS_NV=Gece görüşü özel rengi

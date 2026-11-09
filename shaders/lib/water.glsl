@@ -1,8 +1,8 @@
-/* Oxygen Atmosphere - water.glsl
+/* Cinematic Fog - water.glsl
 Water reflection and refraction related functions.
 */
 
-#include "/lib/oxygen_atmosphere_water_surface.glsl"
+#include "/lib/cinematic_fog_water_surface.glsl"
 
 float linearizeDepth(float depth) {
     return gbufferProjection[3][2] / (gbufferProjection[2][2] + 2.0 * depth - 1.0);

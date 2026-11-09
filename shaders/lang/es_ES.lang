@@ -1,21 +1,10 @@
 # Perfiles
 ############################
-profile.no_effects=Sin efectos
-profile.shadowless_low=Sin sombras - Bajo
-profile.shadowless_medium=Sin sombras - Medio
-profile.shadowless_high=Sin sombras - Alto
-profile.low=Bajo
-profile.medium=Medio
 profile.high=Alto
-profile.extremeplus=Alto (DoF)
 
-profile.comment=Los perfiles "sin sombras" están pensados para máquinas de bajo rendimiento, sin considerar las sombras. Los perfiles tradicionales van agregando sombras de mejor calidad y efectos más avanzados y pesados. Probá las opciones disponibles y encontrá la combinación que mejor te funcione.
 
 # Acerca de
 #############################
-option.ACERCADE=Oxygen Atmosphere 1.1
-option.ACERCADE.comment=¡Gracias por usar este shader! :). Configurá los controles de calidad nativos de Optifine en valores normales o predeterminados para mejor calidad.
-value.ACERCADE.0=v.9.5c
 
 # Opciones
 #############################
@@ -54,7 +43,6 @@ option.DOF=Profundidad de campo
 
 option.DOF_STRENGTH=Intensidad de DoF
 
-option.DOF_SAMPLES_FACTOR=Factor de muestras de DoF
 
 option.AO=Oclusión ambiental
 value.AO.0=Desactivado
@@ -75,25 +63,13 @@ option.MOTION_BLUR_SAMPLES=Muestras de desenfoque
 
 option.VANILLA_WATER=Agua estilo Vanilla
 
-option.WATER_TEXTURE=Textura de agua
-value.WATER_TEXTURE.0=No
-value.WATER_TEXTURE.1=Sí
 
-option.WATER_COLOR_SOURCE=Color del agua
-value.WATER_COLOR_SOURCE.0=Esquema del shader
-value.WATER_COLOR_SOURCE.1=Resource Pack
 
-option.REFLECTION=Reflejos
-value.REFLECTION.0=Desactivado
-value.REFLECTION.1=Activado
 
 option.REFRACTION=Refracción
 value.REFRACTION.0=Desactivado
 value.REFRACTION.1=Activado
 
-option.SSR_TYPE=Tipo de reflejo
-value.SSR_TYPE.0=Imagen invertida
-value.SSR_TYPE.1=Raymarching
 
 option.SUN_REFLECTION=Reflejo solar
 value.SUN_REFLECTION.0=Desactivado
@@ -128,7 +104,7 @@ value.COLOR_SCHEME.4=Captain
 value.COLOR_SCHEME.5=Psicodélico
 value.COLOR_SCHEME.6=Cacao
 value.COLOR_SCHEME.7=Testigo
-value.COLOR_SCHEME.8=Oxygen Atmosphere
+value.COLOR_SCHEME.8=Cinematic Fog
 value.COLOR_SCHEME.99=Personalizado
 
 option.LIGHT_SUNSET_COLOR_R=Color de luz al atardecer R
@@ -171,9 +147,6 @@ option.WATER_COLOR_R=Color del agua R
 option.WATER_COLOR_G=Color del agua G
 option.WATER_COLOR_B=Color del agua B
 
-option.NV_COLOR_R=Multiplicador de visión nocturna R
-option.NV_COLOR_G=Multiplicador de visión nocturna G
-option.NV_COLOR_B=Multiplicador de visión nocturna B
 
 option.OMNI_TINT_CUSTOM=Matiz personalizado Omni
 
@@ -239,21 +212,14 @@ value.BLOCKLIGHT_TEMP.4=Luz blanca
 
 option.sunPathRotation=Ángulo del sol
 
-option.USE_BASIC_SH=Shader básico para dimensiones personalizadas
 
 option.MATERIAL_GLOSS=Brillo del material
 
 option.DYN_HAND_LIGHT=Luz dinámica falsa
 
 # Pantallas
-screen.ADVANCED_SCREEN=Opciones avanzadas
-screen.ADVANCED_SCREEN.comment=Configurar opciones avanzadas
 
-screen.COMPATIBILITY_SCREEN=Compatibilidad
-screen.COMPATIBILITY_SCREEN.comment=Configurar opciones de compatibilidad
 
-screen.SHADOWS_SCREEN=Sombras
-screen.SHADOWS_SCREEN.comment=Configurar opciones de sombras
 
 option.SHADOW_LOCK=Sombras pixeladas
 value.SHADOW_LOCK.0=Deshabilitado
@@ -263,37 +229,12 @@ value.SHADOW_LOCK.64=64x64
 value.SHADOW_LOCK.128=128x128
 value.SHADOW_LOCK.256=256x256
 
-screen.DOF_SCREEN=Profundidad de campo
-screen.DOF_SCREEN.comment=Configurar opciones de profundidad de campo
 
-screen.AO_SCREEN=Oclusión ambiental
-screen.AO_SCREEN.comment=Configurar oclusión ambiental
 
-screen.WATER_SCREEN=Agua
-screen.WATER_SCREEN.comment=Configurar opciones del agua
 
-screen.POST_SCREEN=Efectos posteriores
-screen.POST_SCREEN.comment=Configurar efectos posteriores
 
-screen.LIGHT_SCREEN=Luz
-screen.LIGHT_SCREEN.comment=Configurar opciones de luz
 
-screen.CLOUDS_SCREEN=Sol y nubes
-screen.CLOUDS_SCREEN.comment=Configurar sol y nubes
 
-screen.FOG_SCREEN=Niebla
-screen.FOG_SCREEN.comment=Configurar opciones de niebla
 
-screen.MOTION_BLUR_SCREEN=Desenfoque de movimiento
-screen.MOTION_BLUR_SCREEN.comment=Configurar desenfoque de movimiento
 
-screen.ACCESIBILITY_SCREEN=Accesibilidad
-screen.ACCESIBILITY_SCREEN.comment=Configurar opciones de accesibilidad
 
-screen.CUSTOM_COLORS_SCREEN=Colores personalizados
-screen.CUSTOM_COLORS_SCREEN.comment=Configurar colores personalizados
-screen.CUSTOM_COLORS_DAY=Colores personalizados de día
-screen.CUSTOM_COLORS_SUNSET=Colores personalizados de atardecer/amanecer
-screen.CUSTOM_COLORS_NIGHT=Colores personalizados de noche
-screen.CUSTOM_COLORS_WATER=Color personalizado del agua
-screen.CUSTOM_COLORS_NV=Color personalizado para visión nocturna

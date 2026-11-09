@@ -66,14 +66,14 @@ float omniStrength = ((directLightStrength + 1.0) * 0.25) + 0.75;
 
 // Direct light strenght --
 #ifdef FOLIAGE_V  // This shader has foliage
-    // --- CORRECCIÓN: La variable se declara y calcula aquí, fuera del if/else ---
-    // Esto asegura que 'farDirectLightStrength' esté siempre disponible después de este bloque.
+    // Declared and computed here, outside the if/else,
+    // so 'farDirectLightStrength' is always available after this block.
     float farDirectLightStrength = clamp(directLightStrength, 0.0, 1.0);
     if (mc_Entity.x != ENTITY_LEAVES) {
         farDirectLightStrength = farDirectLightStrength * 0.75 + 0.25;
     }
 
-    // Ahora, la lógica del if/else solo modifica 'directLightStrength' y 'omniStrength'.
+    // The if/else only changes 'directLightStrength' and 'omniStrength'.
     if (isFoliage > .2) {  // It's foliage, light is atenuated by angle
         #ifdef SHADOW_CASTING
             directLightStrength = sqrt(abs(directLightStrength));
@@ -97,37 +97,37 @@ float omniStrength = ((directLightStrength + 1.0) * 0.25) + 0.75;
     // Minimal light
     vec3 omniColor = mix(ZenithSkyColorRGB, directLightColor * 0.45, OMNI_TINT);
     float omniColorLuma = colorAverage(omniColor);
-    // --- OPTIMIZACIÓN #3: Prevenir división por cero ---
+    // Prevent division by zero
     float lumaRatio = AVOID_DARK_LEVEL / max(omniColorLuma, 0.0001);
     vec3 omniColorMin = omniColor * lumaRatio;
     omniColor = max(omniColor, omniColorMin);
 
     omniLight = mix(omniColorMin, omniColor, visibleSky) * omniStrength;
 
-    #ifdef OXYGEN_ATMOSPHERE_STYLE
+    #ifdef CINEMATIC_FOG_STYLE
         // Moonlight only reaches terrain with a clear view of the sky.
         // This lifts outdoor depth without flattening caves or torch light.
-        float oxygenAtmosphereNightLight = step(0.5, dayMoment) * nightMixer;
-        float oxygenAtmosphereMidnight =
+        float cinematicFogNightLight = step(0.5, dayMoment) * nightMixer;
+        float cinematicFogMidnight =
             smoothstep(0.62, 0.72, dayMoment) *
             (1.0 - smoothstep(0.78, 0.90, dayMoment));
         float moonSkyExposure = smoothstep(0.18, 0.92, visibleSky);
         vec3 moonAmbientBase = mix(
             vec3(0.030, 0.046, 0.082),
             vec3(0.130, 0.022, 0.012),
-            OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING
+            CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING
         );
         vec3 moonAmbient =
             moonAmbientBase *
             (0.72 + 0.28 * NIGHT_BRIGHT_PHASE) *
-            mix(1.0, 0.76, oxygenAtmosphereMidnight);
+            mix(1.0, 0.76, cinematicFogMidnight);
         omniLight +=
             moonAmbient *
             moonSkyExposure *
-            oxygenAtmosphereNightLight *
+            cinematicFogNightLight *
             (1.0 - rainStrength * 0.55);
 
-        applyOxygenAtmosphereOvercastLighting(
+        applyCinematicFogOvercastLighting(
             directLightColor,
             directLightStrength,
             omniLight,
@@ -135,7 +135,7 @@ float omniStrength = ((directLightStrength + 1.0) * 0.25) + 0.75;
         );
         #ifdef FOLIAGE_V
             farDirectLightStrength =
-                oxygenAtmosphereOvercastDirectStrength(farDirectLightStrength);
+                cinematicFogOvercastDirectStrength(farDirectLightStrength);
         #endif
     #endif
 #endif
@@ -151,7 +151,7 @@ float omniStrength = ((directLightStrength + 1.0) * 0.25) + 0.75;
     #ifndef SHADOW_CASTING
         // Fake shadows
         if (isEyeInWater == 0) {
-            // Reemplazar pow(x, 10.0) con multiplicaciones ---
+            // Replace pow(x, 10.0) with multiplications
             float visSky2 = visibleSky * visibleSky;
             float visSky4 = visSky2 * visSky2;
             float visSky8 = visSky4 * visSky4;

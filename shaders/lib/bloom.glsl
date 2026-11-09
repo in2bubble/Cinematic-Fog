@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - bloom.glsl
+/* Cinematic Fog - bloom.glsl
 Bloom functions.
 
 Javier Garduño - GNU Lesser General Public License v3.0

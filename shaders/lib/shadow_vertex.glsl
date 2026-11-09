@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - shadow_vertex.glsl
+/* Cinematic Fog - shadow_vertex.glsl
 Vertex shadow function.
 
 Javier Garduño - GNU Lesser General Public License v3.0

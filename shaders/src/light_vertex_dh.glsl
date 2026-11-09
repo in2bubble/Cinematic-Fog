@@ -1,6 +1,6 @@
 tintColor = gl_Color;
 
-// Luz nativa (lmcoord.x: candela, lmcoord.y: cielo) ----
+// Native light (lmcoord.x: block light, lmcoord.y: sky) ----
 #if defined THE_END || defined NETHER
     vec2 illumination = vec2(lmcoord.x, 1.0);
 #else
@@ -14,12 +14,12 @@ visibleSky = clamp(illumination.y, 0.0, 1.0);
     visibleSky = (visibleSky * 0.6) + 0.4;
 #endif
 
-// Intensidad y color de luz de candelas
+// Block light intensity and color
 float candle_luma = illumination.x * sqrt(illumination.x);
 candleColor = CANDLE_BASELIGHT * (candle_luma + sixthPow(illumination.x * 1.17));
 candleColor = clamp(candleColor, vec3(0.0), vec3(4.0));
 
-// Atenuación por dirección de luz directa ===================================
+// Direct light attenuation by direction ===================================
 #if defined THE_END || defined NETHER
     vec3 astroVector = normalize(gbufferModelView * vec4(0.0, 0.89442719, 0.4472136, 0.0)).xyz;
 #else
@@ -29,7 +29,7 @@ candleColor = clamp(candleColor, vec3(0.0), vec3(4.0));
 vec3 normal = gl_NormalMatrix * gl_Normal;
 float astroLightStrength;
 
-// Comprobar la longitud al cuadrado (dot product) es mucho más rápido que la longitud (sqrt).
+// Checking the squared length (dot product) is much faster than the length (sqrt).
 if (dot(normal, normal) > 0.0001) {  // Workaround for undefined normals
     normal = normalize(normal);
     astroLightStrength = dot(normal, astroVector);
@@ -47,7 +47,7 @@ if (dot(normal, normal) > 0.0001) {  // Workaround for undefined normals
 // Omni light intensity changes by angle
 float omniStrength = ((directLightStrength + 1.0) * 0.25) + 0.75;     
 
-// Calculamos color de luz directa
+// Direct light color
 #ifdef UNKNOWN_DIM
     directLightColor = texture2D(lightmap, vec2(0.0, lmcoord.y)).rgb;
 #else
@@ -68,7 +68,7 @@ directLightStrength = clamp(directLightStrength, 0.0, 1.0);
     vec3 omniColor = mix(ZenithSkyColorRGB, directLightColor * 0.45, OMNI_TINT);
     float omniColorLuma = colorAverage(omniColor);
     
-    // --- OPTIMIZACIÓN #3: Prevenir división por cero ---
+    // Prevent division by zero
     float lumaRatio = AVOID_DARK_LEVEL / max(omniColorLuma, 0.0001);
     
     vec3 omniColorMin = omniColor * lumaRatio;
@@ -76,29 +76,29 @@ directLightStrength = clamp(directLightStrength, 0.0, 1.0);
     
     omniLight = mix(omniColorMin, omniColor, visibleSky) * omniStrength;
 
-    #ifdef OXYGEN_ATMOSPHERE_STYLE
+    #ifdef CINEMATIC_FOG_STYLE
         // Keep distant terrain under the same sky-aware moonlight as near chunks.
-        float oxygenAtmosphereNightLight = step(0.5, dayMoment) * nightMixer;
-        float oxygenAtmosphereMidnight =
+        float cinematicFogNightLight = step(0.5, dayMoment) * nightMixer;
+        float cinematicFogMidnight =
             smoothstep(0.62, 0.72, dayMoment) *
             (1.0 - smoothstep(0.78, 0.90, dayMoment));
         float moonSkyExposure = smoothstep(0.18, 0.92, visibleSky);
         vec3 moonAmbientBase = mix(
             vec3(0.030, 0.046, 0.082),
             vec3(0.130, 0.022, 0.012),
-            OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING
+            CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING
         );
         vec3 moonAmbient =
             moonAmbientBase *
             (0.72 + 0.28 * NIGHT_BRIGHT_PHASE) *
-            mix(1.0, 0.76, oxygenAtmosphereMidnight);
+            mix(1.0, 0.76, cinematicFogMidnight);
         omniLight +=
             moonAmbient *
             moonSkyExposure *
-            oxygenAtmosphereNightLight *
+            cinematicFogNightLight *
             (1.0 - rainStrength * 0.55);
 
-        applyOxygenAtmosphereOvercastLighting(
+        applyCinematicFogOvercastLighting(
             directLightColor,
             directLightStrength,
             omniLight,
@@ -108,8 +108,8 @@ directLightStrength = clamp(directLightStrength, 0.0, 1.0);
 #endif
 
 if (isEyeInWater == 0) {
-    // Reemplazar pow(x, 10.0) con multiplicaciones ---
-    // Esto es órdenes de magnitud más rápido. x^10 = (x^2)^2 * x^2
+    // Replace pow(x, 10.0) with multiplications
+    // Much faster than pow(). x^10 = (x^2)^2 * x^2
     float visSky2 = visibleSky * visibleSky;     // x^2
     float visSky4 = visSky2 * visSky2;       // x^4
     float visSky8 = visSky4 * visSky4;       // x^8

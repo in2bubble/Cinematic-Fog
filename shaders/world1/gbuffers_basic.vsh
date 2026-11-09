@@ -1,6 +1,6 @@
 #version 120
 #extension GL_ARB_shader_texture_lod : enable
-/* Oxygen Atmosphere - gbuffers_basic.vsh
+/* Cinematic Fog - gbuffers_basic.vsh
 Render: Basic elements - lines
 
 Javier Garduño - GNU Lesser General Public License v3.0

@@ -1,21 +1,10 @@
 #Profiles
 ############################
-profile.no_effects=Inga effekter
-profile.shadowless_low=Låg (skugglös)
-profile.shadowless_medium=Medium (skugglös)
-profile.shadowless_high=Hög (skugglös)
-profile.low=Låg
-profile.medium=Medium
 profile.high=Hög
-profile.extremeplus=Hög (Skärpedjup)
 
-profile.comment=De "skugglösa" profilerna är designade för datorer med låg prestanda, vilket inaktiverar skuggor. Traditionella profiler lägger långsamt till skuggor med högre kvalitet och mer avancerade tunga effekter. Var god experimentera med de tillgängliga alternativen och hitta den bästa kombinationen för dig.
 
 #About
 #############################
-option.ACERCADE=Oxygen Atmosphere 1.1
-option.ACERCADE.comment=Tack för att du använder denna shader! :). Ändra Optifines inbyggda kvalitetsalternativ till normala värden eller dess standardvärden för bättre kvalitet.
-value.ACERCADE.0=v.9.5c
 
 #Options
 #############################
@@ -54,7 +43,6 @@ option.DOF=Skärpedjup
 
 option.DOF_STRENGTH=Styrka för skärpedjup
 
-option.DOF_SAMPLES_FACTOR=Samplingsfaktor för skärpedjup
 
 option.AO=Omgivande inneslutning
 value.AO.0=AV
@@ -75,25 +63,13 @@ option.MOTION_BLUR_SAMPLES=Samplingar för rörelseoskärpa
 
 option.VANILLA_WATER=Originalaktigt vatten
 
-option.WATER_TEXTURE=Vattentextur
-value.WATER_TEXTURE.0=Nej
-value.WATER_TEXTURE.1=Ja
 
-option.WATER_COLOR_SOURCE=Vattenfärg
-value.WATER_COLOR_SOURCE.0=Shaderschema
-value.WATER_COLOR_SOURCE.1=Resurspaket
 
-option.REFLECTION=Reflektion
-value.REFLECTION.0=AV
-value.REFLECTION.1=PÅ
 
 option.REFRACTION=Refraktion
 value.REFRACTION.0=AV
 value.REFRACTION.1=PÅ
 
-option.SSR_TYPE=Reflektionstyp
-value.SSR_TYPE.0=Spegelbild
-value.SSR_TYPE.1=Raymarching
 
 option.SUN_REFLECTION=Solreflektion
 value.SUN_REFLECTION.0=AV
@@ -128,7 +104,7 @@ value.COLOR_SCHEME.4=Captain
 value.COLOR_SCHEME.5=Psychedelic
 value.COLOR_SCHEME.6=Cocoa
 value.COLOR_SCHEME.7=Testigo
-value.COLOR_SCHEME.8=Oxygen Atmosphere
+value.COLOR_SCHEME.8=Cinematic Fog
 value.COLOR_SCHEME.99=Beställnings
 
 option.LIGHT_SUNSET_COLOR_R=Solnedgångsljus R
@@ -171,9 +147,6 @@ option.WATER_COLOR_R=Vatten R
 option.WATER_COLOR_G=Vatten G
 option.WATER_COLOR_B=Vatten B
 
-option.NV_COLOR_R=Night Vision R Multiplikator
-option.NV_COLOR_G=Night Vision G Multiplikator
-option.NV_COLOR_B=Night Vision B Multiplikator
 
 option.OMNI_TINT_CUSTOM=Omni nyans
 
@@ -238,21 +211,14 @@ value.BLOCKLIGHT_TEMP.4=Vitt ljus
 
 option.sunPathRotation=Solvinkel
 
-option.USE_BASIC_SH=Enkel shader för anpassade dimensioner
 
 option.MATERIAL_GLOSS=Materialglans
 
 option.DYN_HAND_LIGHT=Konstgjort dynamiskt ljus
 
 #Screens
-screen.ADVANCED_SCREEN=Avancerade alternativ
-screen.ADVANCED_SCREEN.comment=Ändra avancerade alternativ
 
-screen.COMPATIBILITY_SCREEN=Kompatibilitet
-screen.COMPATIBILITY_SCREEN.comment=Ställ in kompatibilitetsalternativ
 
-screen.SHADOWS_SCREEN=Skuggor
-screen.SHADOWS_SCREEN.comment=Ändra skuggalternativ
 
 option.SHADOW_LOCK=Pixel locked shadows
 value.SHADOW_LOCK.0=Disabled
@@ -262,36 +228,12 @@ value.SHADOW_LOCK.64=64x64
 value.SHADOW_LOCK.128=128x128
 value.SHADOW_LOCK.256=256x256
 
-screen.DOF_SCREEN=Skärpedjup
-screen.DOF_SCREEN.comment=Ändra skärpedjupsalternativ
 
-screen.AO_SCREEN=Omgivande ocklusion
-screen.AO_SCREEN.comment=Ändra alternativ för omgivande ocklusion
 
-screen.WATER_SCREEN=Vatten
-screen.WATER_SCREEN.comment=Ändra vattenalternativ.
 
-screen.POST_SCREEN=Efterbehandling
-screen.POST_SCREEN.comment=Ändra efterbearbetningsalternativ.
 
-screen.LIGHT_SCREEN=Ljus
-screen.LIGHT_SCREEN.comment=Ändra ljusalternativ.
 
-screen.CLOUDS_SCREEN=Sol och moln
-screen.CLOUDS_SCREEN.comment=Ändra alternativ för sol och moln.
 
-screen.FOG_SCREEN=Dimma
-screen.FOG_SCREEN.comment=Ändra dimalternativ
 
-screen.MOTION_BLUR_SCREEN=Rörelseoskärpa
-screen.MOTION_BLUR_SCREEN.comment=Ändra rörelseskärpealternativ
 
-screen.ACCESIBILITY_SCREEN=Tillgänglighet
-screen.ACCESIBILITY_SCREEN.comment=Ändra tillgänglighetsalternativ
 
-screen.CUSTOM_COLORS_SCREEN=Anpassade färger
-screen.CUSTOM_COLORS_SCREEN.comment=Ställ in anpassade färger
-screen.CUSTOM_COLORS_DAY=Dag anpassade färger
-screen.CUSTOM_COLORS_SUNSET=Solnedgång/gryning anpassade färger
-screen.CUSTOM_COLORS_NIGHT=Natt anpassade färger
-screen.CUSTOM_COLORS_WATER=Vatten anpassad färg

@@ -25,11 +25,11 @@ vec3 shadowWorld = position.xyz + bias;
 
 shadowPos = get_shadow_pos(shadowWorld);
 
-// --- OPTIMIZACIÓN: Reemplazar sqrt() y el costoso pow() ---
+// Replace sqrt() and the costly pow()
 vec2 shadow_diffuse_aux = shadowPos.xy * 2.0 - 1.0;
 float diffuse = length(shadow_diffuse_aux);
 
-// Reemplazo ultra-rápido de pow(diffuse, 10.0)
+// Fast replacement for pow(diffuse, 10.0)
 float diffuse2 = diffuse * diffuse;
 float diffuse4 = diffuse2 * diffuse2;
 float diffuse8 = diffuse4 * diffuse4;

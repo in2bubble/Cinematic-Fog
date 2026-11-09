@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - ambientOcclusion.glsl
+/* Cinematic Fog - ao.glsl
 Based on old Capt Tatsu's ambient occlusion functions.
 
 */

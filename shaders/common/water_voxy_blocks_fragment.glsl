@@ -49,7 +49,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
         // Minimal light
         vec3 omniColor = mix(ZenithSkyColorRGB, directLightColor * 0.45, OMNI_TINT);
         float omniColorLuma = colorAverage(omniColor);
-        // --- OPTIMIZACIÓN #3: Prevenir división por cero ---
+        // Prevent division by zero
         float lumaRatio = AVOID_DARK_LEVEL / max(omniColorLuma, 0.0001);
         vec3 omniColorMin = omniColor * lumaRatio;
         omniColor = max(omniColor, omniColorMin);
@@ -61,7 +61,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
         #ifndef SHADOW_CASTING
             // Fake shadows
             if (isEyeInWater == 0) {
-                // Reemplazar pow(x, 10.0) con multiplicaciones ---
+                // Replace pow(x, 10.0) with multiplications
                 float visSky2 = visibleSky * visibleSky;
                 float visSky4 = visSky2 * visSky2;
                 float visSky8 = visSky4 * visSky4;
@@ -86,7 +86,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
 
     // Fog Vertex
 
-    // 1. Reconstruir clip space (base común)
+    // 1. Rebuild clip space (shared base)
     vec2 ndc = (gl_FragCoord.xy / vec2(viewWidth, viewHeight)) * 2.0 - 1.0;
     float depth = gl_FragCoord.z * 2.0 - 1.0;
     vec4 clipPos = vec4(ndc, depth, 1.0);
@@ -96,11 +96,11 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
     viewSpacePos4D /= viewSpacePos4D.w;
     vec3 fragposition = viewSpacePos4D.xyz;
 
-    // 3. World space derivado directamente de fragposition
+    // 3. World space derived directly from fragposition
     vec4 worldPos = vxModelViewInv * viewSpacePos4D;
     vec4 worldposition = worldPos + vec4(cameraPosition, 0.0);
 
-    // 3. La distancia desde la cámara (equivalente a gl_FogFragCoord)
+    // 3. Distance from the camera (same as gl_FogFragCoord)
     float fogFragCoord = length(worldPos.xyz);
 
     vec2 eyeBrightSmoothFloat = vec2(eyeBrightnessSmooth);
@@ -124,13 +124,13 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
         vec3 waterNormalBase = vec3(0.0, 0.0, 1.0);
     #else
         vec4 waterSurfaceData =
-            oxygenAtmosphereWaterSurfaceData(
+            cinematicFogWaterSurfaceData(
                 worldposition.xzy,
                 dayMomentV,
                 0.0
             );
         vec3 waterNormalBase =
-            oxygenAtmosphereWaterNormal(waterSurfaceData);
+            cinematicFogWaterNormal(waterSurfaceData);
     #endif
 
     vec3 surfaceNormal;
@@ -178,13 +178,13 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
                 (directLightStrength * visibleSky * directLightColor) * (1.0 - rainStrength * 0.75) +
                 candleColor;
 
-            vec3 temporalWaterColor = oxygenAtmosphereWaterTimeColorVoxy(
+            vec3 temporalWaterColor = cinematicFogWaterTimeColorVoxy(
                 dayMixerV,
                 nightMixerV,
                 dayMomentV
             );
             blockColor.rgb =
-                oxygenAtmosphereWaterEnvironmentLighting(
+                cinematicFogWaterEnvironmentLighting(
                     realLight,
                     skyColorReflect,
                     temporalWaterColor,
@@ -207,7 +207,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
                 1.0
             );
 
-            fresnel = oxygenAtmosphereWaterReflectionFresnel(
+            fresnel = cinematicFogWaterReflectionFresnel(
                 fresnel,
                 waterSurfaceData,
                 dayMomentV,
@@ -231,7 +231,7 @@ void voxy_emitFragment(VoxyFragmentParameters parameters) {
 
             blockColor.rgb = water_shader_voxy(fragposition, surfaceNormal, blockColor.rgb, skyColorReflect, normalizedReflectWaterVector, fresnel, visibleSky, directLightColor, lmcoord);
         #endif
-    } else {  // Otros translúcidos
+    } else {  // Other translucent blocks
         blockColor = parameters.sampledColour;
 
         blockColor *= tintColor;

@@ -1,6 +1,6 @@
 #version 120
 #extension GL_ARB_shader_texture_lod : enable
-/* Oxygen Atmosphere - gbuffers_skybasic.vsh
+/* Cinematic Fog - gbuffers_skybasic.vsh
 Render: Sky
 
 Javier Garduño - GNU Lesser General Public License v3.0

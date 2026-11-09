@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - basic_utils.glsl
+/* Cinematic Fog - vector_utils.glsl
 Moving vector utils.
 
 Javier Garduño - GNU Lesser General Public License v3.0

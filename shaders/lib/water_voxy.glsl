@@ -1,8 +1,8 @@
-/* Oxygen Atmosphere - water_voxy.glsl
+/* Cinematic Fog - water_voxy.glsl
 Water reflection and refraction related functions (voxy).
 */
 
-#include "/lib/oxygen_atmosphere_water_surface.glsl"
+#include "/lib/cinematic_fog_water_surface.glsl"
 
 #if SUN_REFLECTION == 1
     #if !defined NETHER && !defined THE_END

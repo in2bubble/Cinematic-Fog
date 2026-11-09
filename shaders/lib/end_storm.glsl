@@ -1,5 +1,5 @@
 /*
- * Oxygen Atmosphere - The End storm identity.
+ * Cinematic Fog - The End storm identity.
  *
  * These helpers deliberately avoid the Overworld day/night system. The End
  * has no sky or lunar cycle; its only large-scale light changes are irregular

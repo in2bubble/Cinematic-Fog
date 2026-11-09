@@ -1,6 +1,6 @@
 #version 120
 #extension GL_ARB_shader_texture_lod : enable
-/* Oxygen Atmosphere - final.fsh
+/* Cinematic Fog - final.fsh
 Render: Final renderer
 
 Javier Garduño - GNU Lesser General Public License v3.0

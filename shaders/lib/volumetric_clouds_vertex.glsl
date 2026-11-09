@@ -1,4 +1,4 @@
-#ifdef OXYGEN_ATMOSPHERE_STYLE
+#ifdef CINEMATIC_FOG_STYLE
     // Lower threshold produces a broad, heavy cloud deck in clear weather
     // and nearly overcast coverage during rain.
     umbral = mix(0.30, 0.08, rainStrength);
@@ -54,35 +54,35 @@ darkCloudColor = mix(
     0.4
 );
 
-#ifdef OXYGEN_ATMOSPHERE_STYLE
+#ifdef CINEMATIC_FOG_STYLE
     // Blue-gray cloud lighting carries the broad atmosphere: pale upper
     // masses over a dense, cool and substantially heavier underside.
-    float oxygenAtmosphereCloudLuma = luma(cloudColor);
-    float oxygenAtmosphereDarkCloudLuma = luma(darkCloudColor);
-    float oxygenAtmosphereEclipseNight =
-        OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING *
+    float cinematicFogCloudLuma = luma(cloudColor);
+    float cinematicFogDarkCloudLuma = luma(darkCloudColor);
+    float cinematicFogEclipseNight =
+        CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING *
         step(0.5, dayMoment) *
         nightMixer;
-    vec3 oxygenAtmosphereUpperCloudTint = mix(
+    vec3 cinematicFogUpperCloudTint = mix(
         vec3(0.92, 0.99, 1.07),
         vec3(1.55, 0.40, 0.28),
-        oxygenAtmosphereEclipseNight
+        cinematicFogEclipseNight
     );
-    vec3 oxygenAtmosphereLowerCloudTint = mix(
+    vec3 cinematicFogLowerCloudTint = mix(
         vec3(0.82, 0.91, 1.04),
         vec3(1.35, 0.30, 0.22),
-        oxygenAtmosphereEclipseNight
+        cinematicFogEclipseNight
     );
     cloudColor = mix(
         cloudColor,
-        vec3(oxygenAtmosphereCloudLuma) *
-            oxygenAtmosphereUpperCloudTint,
+        vec3(cinematicFogCloudLuma) *
+            cinematicFogUpperCloudTint,
         0.72
     ) * 0.86;
     darkCloudColor = mix(
         darkCloudColor,
-        vec3(oxygenAtmosphereDarkCloudLuma) *
-            oxygenAtmosphereLowerCloudTint,
+        vec3(cinematicFogDarkCloudLuma) *
+            cinematicFogLowerCloudTint,
         0.80
     ) * 0.52;
 #endif

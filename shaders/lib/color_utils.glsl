@@ -1,9 +1,9 @@
-/* Oxygen Atmosphere - color_utils.glsl
+/* Cinematic Fog - color_utils.glsl
 Usefull data for color manipulation.
 
 Javier Garduño - GNU Lesser General Public License v3.0
-Oxygen Atmosphere visual theme added 2026-08-02.
-Oxygen Atmosphere palette revision added 2026-08-02.
+Cinematic Fog visual theme added 2026-08-02.
+Cinematic Fog palette revision added 2026-08-02.
 */
 
 uniform float dayMoment;
@@ -11,12 +11,12 @@ uniform float dayMixer;
 uniform float nightMixer;
 uniform int moonPhase;
 
-#ifdef OXYGEN_ATMOSPHERE_STYLE
+#ifdef CINEMATIC_FOG_STYLE
     uniform int worldDay;
-    #include "/lib/oxygen_atmosphere_lunar_event.glsl"
+    #include "/lib/cinematic_fog_lunar_event.glsl"
 
-    #define OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE oxygenAtmosphereLunarEclipseAmount(worldDay)
-    #define OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING (OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE * OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_INTENSITY)
+    #define CINEMATIC_FOG_LUNAR_ECLIPSE cinematicFogLunarEclipseAmount(worldDay)
+    #define CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING (CINEMATIC_FOG_LUNAR_ECLIPSE * CINEMATIC_FOG_LUNAR_ECLIPSE_INTENSITY)
 #endif
 
 #ifdef UNKNOWN_DIM
@@ -26,21 +26,21 @@ uniform int moonPhase;
 
 #define NIGHT_BRIGHT_PHASE (NIGHT_BRIGHT + (NIGHT_BRIGHT * (abs(4.0 - moonPhase) * 0.25)))
 
-#ifdef OXYGEN_ATMOSPHERE_STYLE
+#ifdef CINEMATIC_FOG_STYLE
     // The fork's palette remains stable even if Iris retains an old
     // COLOR_SCHEME override in its per-pack configuration.
     #define OMNI_TINT 0.32
     #define LIGHT_SUNSET_COLOR vec3(0.90, 0.70, 0.56)
     #define LIGHT_DAY_COLOR vec3(0.84, 0.87, 0.88)
-    #define LIGHT_NIGHT_COLOR mix(vec3(0.060, 0.086, 0.142), vec3(0.245, 0.052, 0.028), OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING) * NIGHT_BRIGHT_PHASE
+    #define LIGHT_NIGHT_COLOR mix(vec3(0.060, 0.086, 0.142), vec3(0.245, 0.052, 0.028), CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING) * NIGHT_BRIGHT_PHASE
 
     #define ZENITH_SUNSET_COLOR vec3(0.27, 0.33, 0.38)
     #define ZENITH_DAY_COLOR vec3(0.36, 0.44, 0.50)
-    #define ZENITH_NIGHT_COLOR mix(vec3(0.009, 0.018, 0.038), vec3(0.055, 0.009, 0.006), OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING) * NIGHT_BRIGHT_PHASE
+    #define ZENITH_NIGHT_COLOR mix(vec3(0.009, 0.018, 0.038), vec3(0.055, 0.009, 0.006), CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING) * NIGHT_BRIGHT_PHASE
 
     #define HORIZON_SUNSET_COLOR vec3(0.72, 0.61, 0.54)
     #define HORIZON_DAY_COLOR vec3(0.60, 0.65, 0.68)
-    #define HORIZON_NIGHT_COLOR mix(vec3(0.020, 0.035, 0.064), vec3(0.110, 0.020, 0.010), OXYGEN_ATMOSPHERE_LUNAR_ECLIPSE_LIGHTING) * NIGHT_BRIGHT_PHASE
+    #define HORIZON_NIGHT_COLOR mix(vec3(0.020, 0.035, 0.064), vec3(0.110, 0.020, 0.010), CINEMATIC_FOG_LUNAR_ECLIPSE_LIGHTING) * NIGHT_BRIGHT_PHASE
 
     #define WATER_COLOR vec3(0.025, 0.075, 0.12)
 #elif COLOR_SCHEME == 0  // Ethereal
@@ -163,7 +163,7 @@ uniform int moonPhase;
     #define HORIZON_NIGHT_COLOR vec3(0.025, 0.035, 0.05) * NIGHT_BRIGHT_PHASE
 
     #define WATER_COLOR vec3(0.0118, 0.1098, 0.1922)
-#elif COLOR_SCHEME == 8  // Oxygen Atmosphere
+#elif COLOR_SCHEME == 8  // Cinematic Fog
     // Neutral daylight preserves biome colors. Cool sky and shadows provide
     // atmosphere, while warm sunset light creates cinematic color contrast.
     #define OMNI_TINT 0.32
@@ -197,7 +197,6 @@ uniform int moonPhase;
     #define WATER_COLOR vec3(WATER_COLOR_R, WATER_COLOR_G, WATER_COLOR_B)
 #endif
 
-#define NV_COLOR vec3(NV_COLOR_R, NV_COLOR_G, NV_COLOR_B)
 
 #if BLOCKLIGHT_TEMP == 0
     #define CANDLE_BASELIGHT vec3(0.29975, 0.15392353, 0.0799)
@@ -213,8 +212,8 @@ uniform int moonPhase;
 
 #include "/lib/day_blend.glsl"
 
-#ifdef OXYGEN_ATMOSPHERE_STYLE
-    vec3 oxygenAtmosphereWaterSurfacePalette(
+#ifdef CINEMATIC_FOG_STYLE
+    vec3 cinematicFogWaterSurfacePalette(
         float waterRainStrength
     ) {
         vec3 clearWater = dayBlend(
@@ -234,13 +233,13 @@ uniform int moonPhase;
         );
     }
 
-    vec3 oxygenAtmosphereUnderwaterPalette(
+    vec3 cinematicFogUnderwaterPalette(
         float waterRainStrength
     ) {
         // Preserve the surface identity below water while allowing the volume
         // to scatter slightly more cyan/blue as depth increases.
         vec3 surfaceWater =
-            oxygenAtmosphereWaterSurfacePalette(
+            cinematicFogWaterSurfacePalette(
                 waterRainStrength
             );
         vec3 depthScattering = dayBlend(
@@ -259,7 +258,7 @@ uniform int moonPhase;
         );
     }
 
-    float oxygenAtmosphereOvercastDirectStrength(float sourceStrength) {
+    float cinematicFogOvercastDirectStrength(float sourceStrength) {
         float directionality = dayBlendFloat(0.38, 0.44, 0.27);
         float diffuseFloor = dayBlendFloat(0.18, 0.20, 0.12);
         return mix(
@@ -272,14 +271,14 @@ uniform int moonPhase;
     // A permanently cloud-heavy sky should behave like a very large area
     // light. Keep a small directional component for shape, but let diffuse
     // skylight carry most of the terrain so noon never looks sun-blasted.
-    void applyOxygenAtmosphereOvercastLighting(
+    void applyCinematicFogOvercastLighting(
         inout vec3 directColor,
         inout float directStrength,
         inout vec3 ambientLight,
         float skyVisibility
     ) {
         float directionalScale = dayBlendFloat(0.46, 0.42, 0.28);
-        directStrength = oxygenAtmosphereOvercastDirectStrength(directStrength);
+        directStrength = cinematicFogOvercastDirectStrength(directStrength);
         directColor *= directionalScale;
 
         vec3 overcastAmbient = dayBlend(
@@ -303,7 +302,7 @@ uniform int moonPhase;
 #endif
 
 // Fog parameter per hour
-#ifdef OXYGEN_ATMOSPHERE_STYLE
+#ifdef CINEMATIC_FOG_STYLE
     // Lower exponents bring the mist closer while retaining foreground detail.
     #define FOG_DENSITY 1.35
     #define FOG_DAY 1.35

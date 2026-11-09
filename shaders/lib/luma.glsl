@@ -1,4 +1,4 @@
-/* Oxygen Atmosphere - luma.glsl
+/* Cinematic Fog - luma.glsl
 Luma related functions.
 
 Javier Garduño - GNU Lesser General Public License v3.0
